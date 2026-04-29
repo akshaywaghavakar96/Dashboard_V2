@@ -624,20 +624,6 @@ function drillproduct(productName) {
       </table>
     </div>
 
-    <div class="panel">
-      <div class="ph"><div class="ph-ico" style="background:#EFF6FF;">📊</div><div class="ph-title">Bank wise Volume — Detailed</div></div>
-      <table class="tbl">
-        <thead><tr><th>Bank Name</th><th class="r">Total Vol</th><th class="r">Appr Vol</th><th class="r">Appr %</th><th class="r">BD BI Vol</th><th class="r">BD BI %</th><th class="r">BD CI Vol</th><th class="r">BD CI %</th><th class="r">TD Vol</th><th class="r">TD %</th></tr></thead>
-        <tbody>
-          <tr><td><b>CHHATTISGARH RAJYA GRAMIN BANK</b></td><td class="r mono">2,473,892</td><td class="r mono">1,516,072</td><td class="r"><span class="hc h2">61.28%</span></td><td class="r mono">261,089</td><td class="r"><span class="hc h3">10.55%</span></td><td class="r mono">95,179</td><td class="r">3.85%</td><td class="r mono">330,510</td><td class="r"><span class="hc h3">13.36%</span></td></tr>
-          <tr><td><b>VASAVI MSCM CO OP BANK LTD</b></td><td class="r mono">852,567</td><td class="r mono">719,133</td><td class="r"><span class="hc h1">84.35%</span></td><td class="r mono">5,472</td><td class="r"><span class="hc h0">0.64%</span></td><td class="r mono">26,067</td><td class="r">3.06%</td><td class="r mono">99,423</td><td class="r"><span class="hc h2">11.66%</span></td></tr>
-          <tr><td><b>BHARUCH DISTRICT CENTRAL CO OP</b></td><td class="r mono">936,975</td><td class="r mono">749,069</td><td class="r"><span class="hc h1">79.95%</span></td><td class="r mono">14,441</td><td class="r"><span class="hc h0">1.54%</span></td><td class="r mono">121,088</td><td class="r">12.92%</td><td class="r mono">17,460</td><td class="r"><span class="hc h0">1.86%</span></td></tr>
-          <tr><td><b>BHARUCH DISTRICT CENTRAL CO OP</b></td><td class="r mono">118,086</td><td class="r mono">101,319</td><td class="r"><span class="hc h0">85.80%</span></td><td class="r mono">2,352</td><td class="r"><span class="hc h0">1.99%</span></td><td class="r mono">11,777</td><td class="r">9.97%</td><td class="r mono">2,593</td><td class="r"><span class="hc h0">2.20%</span></td></tr>
-          <tr><td><b>BHARUCH DISTRICT CENTRAL CO OP</b></td><td class="r mono">14,825,076</td><td class="r mono">13,525,925</td><td class="r"><span class="hc h0">91.24%</span></td><td class="r mono">57,998</td><td class="r"><span class="hc h0">0.39%</span></td><td class="r mono">15,066</td><td class="r">0.10%</td><td class="r mono">128,739</td><td class="r"><span class="hc h0">0.87%</span></td></tr>
-          <tr class="tot"><td><b>Total</b></td><td class="r mono">19,206,596</td><td class="r mono">16,611,518</td><td class="r"><span class="hc h1">86.49%</span></td><td class="r mono">341,352</td><td class="r"><span class="hc h1">1.78%</span></td><td class="r mono">269,177</td><td class="r">1.40%</td><td class="r mono">578,725</td><td class="r"><span class="hc h2">3.01%</span></td></tr>
-        </tbody>
-      </table>
-    </div>
     
   <div class="footer"><div style="font-size:10px;color:var(--text3);">NPCI Dashboad· CCU Team · Last sync: 09:45 AM 14 Mar 2026</div></div>
 </div>
@@ -648,14 +634,76 @@ function drillproduct(productName) {
 function drillproduct_tdbd(productName) {
   window.selectedProduct = productName;
 
-  const bankTitle = document.querySelector('#page-t .pg-title');
-  const bankSub   = document.querySelector('#page-t .pg-sub');
-  if (bankTitle) bankTitle.textContent = 'Bank Wise — ' + productName;
-  if (bankSub)   bankSub.textContent   = 'Product: ' + productName;
-
-  showTab('bankmaster');
+  const bankTitle = document.querySelector('#page-tdbd .pg-title');
+  const bankSub   = document.querySelector('#page-tdbd .pg-sub');
+  
+  showTab('tdbd data');
 }
 </script>
+
+
+<script>
+
+function drillproduct_reason(bankName) {
+  window.selectedProduct = bankName;
+
+  
+  showTab('tdbd reason');
+}
+</script>
+<!--------->
+
+<!-----tD bd data---->
+<div id="page-tdbd data" class="page">
+  <div class="panel">
+      <div class="ph"><div class="ph-ico" style="background:#EFF6FF;">📊</div><div class="ph-title">Bank wise Volume — Detailed</div></div>
+      <table class="tbl">
+        <thead><tr><th>Bank Name</th><th class="r">Total Vol</th><th class="r">Appr Vol</th><th class="r">Appr %</th><th class="r">BD BI Vol</th><th class="r">BD BI %</th><th class="r">BD CI Vol</th><th class="r">BD CI %</th><th class="r">TD Vol</th><th class="r">TD %</th></tr></thead>
+        <tbody>
+          <tr><td><b>CHHATTISGARH RAJYA GRAMIN BANK</b></td><td class="r mono">2,473,892</td><td class="r mono">1,516,072</td><td class="r"><span class="hc h2">61.28%</span></td><td class="r mono">261,089</td><td class="r"><span class="hc h3">10.55%</span></td><td class="r mono">95,179</td><td class="r">3.85%</td><td class="r mono">330,510</td><td class="r"><span class="hc h3">13.36%</span></td></tr>
+          <tr><td><b>VASAVI MSCM CO OP BANK LTD</b></td><td class="r mono">852,567</td><td class="r mono">719,133</td><td class="r"><span class="hc h1">84.35%</span></td><td class="r mono">5,472</td><td class="r"><span class="hc h0">0.64%</span></td><td class="r mono">26,067</td><td class="r">3.06%</td><td class="r mono">99,423</td><td class="r"><span class="hc h2">11.66%</span></td></tr>
+          <tr><td class="drillable" onclick="drillproduct_reason('BHARUCH DISTRICT CENTRAL CO OP')"><b>BHARUCH DISTRICT CENTRAL CO OP</b></td><td class="r mono">936,975</td><td class="r mono">749,069</td><td class="r"><span class="hc h1">79.95%</span></td><td class="r mono">14,441</td><td class="r"><span class="hc h0">1.54%</span></td><td class="r mono">121,088</td><td class="r">12.92%</td><td class="r mono">17,460</td><td class="r"><span class="hc h0">1.86%</span></td></tr>
+          <tr><td><b>BHARUCH DISTRICT CENTRAL CO OP</b></td><td class="r mono">118,086</td><td class="r mono">101,319</td><td class="r"><span class="hc h0">85.80%</span></td><td class="r mono">2,352</td><td class="r"><span class="hc h0">1.99%</span></td><td class="r mono">11,777</td><td class="r">9.97%</td><td class="r mono">2,593</td><td class="r"><span class="hc h0">2.20%</span></td></tr>
+          <tr><td><b>BHARUCH DISTRICT CENTRAL CO OP</b></td><td class="r mono">14,825,076</td><td class="r mono">13,525,925</td><td class="r"><span class="hc h0">91.24%</span></td><td class="r mono">57,998</td><td class="r"><span class="hc h0">0.39%</span></td><td class="r mono">15,066</td><td class="r">0.10%</td><td class="r mono">128,739</td><td class="r"><span class="hc h0">0.87%</span></td></tr>
+          <tr class="tot"><td><b>Total</b></td><td class="r mono">19,206,596</td><td class="r mono">16,611,518</td><td class="r"><span class="hc h1">86.49%</span></td><td class="r mono">341,352</td><td class="r"><span class="hc h1">1.78%</span></td><td class="r mono">269,177</td><td class="r">1.40%</td><td class="r mono">578,725</td><td class="r"><span class="hc h2">3.01%</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>  
+  <!-----tD bd data---->
+<div id="page-tdbd reason" class="page">
+  <div class="panel">
+      <div class="ph"><div class="ph-ico" style="background:#EFF6FF;">📊</div><div class="ph-title">Technical Decline</div></div>
+      <table class="tbl">
+        <thead><tr><th>Reason Code</th><th>Reason Desc</th><th class="r">Volume</th><th class="r">% of Total TD</th></thead>
+        <tbody>
+          <tr><td><b>PM</b></td><td>TRANSACTION TYPE NOT SUBMITTED</td><td class="r mono">379</td><td class="r mono">25.24%</td></tr>
+          <tr><td><b>IU</b></td><td>ISSUER NODE OFFLINE</td><td class="r mono">968</td><td class="r mono">64.49%</td></tr>
+          <tr><td><b>CU</b></td><td>HOST(CBS) OFFLINE</td><td class="r mono">120</td><td class="r mono">07.99%</td></tr>
+          <tr><td><b>S9</b></td><td>GRACEFUL DECLINE</td><td class="r mono">8</td><td class="r mono">0.5%</td></tr>
+          <tr><td><b>38</b></td><td>DUPLICATE TRANSACTION</td><td class="r mono">22</td><td class="r mono">01.46%</td></tr>
+          <tr><td><b>7</b></td><td>INVALID PSP CODE</td><td class="r mono">4</td><td class="r mono">0.2%</td></tr>
+          <tr class="tot"><td><b>Total</b></td><td class="r mono"></td><td class="r mono">1501</td><td class="r mono">100%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="panel">
+      <div class="ph"><div class="ph-ico" style="background:#EFF6FF;">📊</div><div class="ph-title">Business Decline</div></div>
+      <table class="tbl">
+        <thead><tr><th>Reason Code</th><th>Reason Desc</th><th class="r">Volume</th><th class="r">% of Total BD</th></thead>
+        <tbody>
+          <tr><td><b>PM</b></td><td>TRANSACTION TYPE NOT SUBMITTED</td><td class="r mono">379</td><td class="r mono">25.24%</td></tr>
+          <tr><td><b>IU</b></td><td>ISSUER NODE OFFLINE</td><td class="r mono">968</td><td class="r mono">64.49%</td></tr>
+          <tr><td><b>CU</b></td><td>HOST(CBS) OFFLINE</td><td class="r mono">120</td><td class="r mono">07.99%</td></tr>
+          <tr><td><b>S9</b></td><td>GRACEFUL DECLINE</td><td class="r mono">8</td><td class="r mono">0.5%</td></tr>
+          <tr><td><b>38</b></td><td>DUPLICATE TRANSACTION</td><td class="r mono">22</td><td class="r mono">01.46%</td></tr>
+          <tr><td><b>7</b></td><td>INVALID PSP CODE</td><td class="r mono">4</td><td class="r mono">0.2%</td></tr>
+          <tr class="tot"><td><b>Total</b></td><td class="r mono"></td><td class="r mono">1501</td><td class="r mono">100%</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>  
+ 
 <!-- ═══════════════════════════════════════════════════════ -->
 <!-- PAGE: CHARGEBACK & DEEMED -->
 <!-- ═══════════════════════════════════════════════════════ -->
@@ -764,8 +812,8 @@ function drillproduct_dues(productName) {
 function drillproduct_deemed(productName) {
   window.selectedProduct = productName;
 
-  const bankTitle = document.querySelector('#page-cb .pg-title');
-  const bankSub   = document.querySelector('#page-cb .pg-sub');
+  const bankTitle = document.querySelector('#page-c .pg-title');
+  const bankSub   = document.querySelector('#page-c .pg-sub');
   if (bankTitle) bankTitle.textContent = 'Bank Wise — ' + productName;
   if (bankSub)   bankSub.textContent   = 'Product: ' + productName;
 

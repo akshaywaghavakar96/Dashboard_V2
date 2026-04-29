@@ -243,6 +243,7 @@ select.btn{appearance:none;padding-right:22px;background-image:url("data:image/s
     <div class="nav on" onclick="showTab('overview',this)"><span class="nav-ico">📊</span>Overview</div>
     <div class="nav on" onclick="showTab('business',this)"><span class="nav-ico">📊</span>Business</div>
     <div class="nav" onclick="showTab('bankmaster',this)"><span class="nav-ico">🏦</span>Bank Data</div>
+    <div class="nav" onclick="showTab('baank360',this)"><span class="nav-ico">🏦</span>Bank 360</div>
     <div class="nav" onclick="showTab('rm',this)"><span class="nav-ico">👥</span>RM Performance</div>
   </div>
   <div class="sb-sec">
@@ -294,17 +295,19 @@ select.btn{appearance:none;padding-right:22px;background-image:url("data:image/s
   <!-- KPI Strip -->
   <div class="kpi-row">
     <div class="kpi bl" onclick="showTab('cb')">
-      <div class="kpi-lbl">CB Due Today</div>
+      <div class="kpi-lbl">CB Due Today | Banks</div>
       <div class="kpi-val">26</div>
-      <div class="kpi-d dn">498.90K</div>
+      <div class="kpi-d dn"> 205 Transactions</div>
+      <div class="kpi-d dn"> 29.98k</div>
       <div class="sparkline">
         <div class="spk" style="height:40%;background:#BFDBFE;"></div><div class="spk" style="height:55%;background:#93C5FD;"></div><div class="spk" style="height:50%;background:#60A5FA;"></div><div class="spk" style="height:70%;background:#3B82F6;"></div><div class="spk" style="height:65%;background:#2563EB;"></div><div class="spk" style="height:80%;background:#1D4ED8;"></div><div class="spk" style="height:100%;background:#1E40AF;"></div>
       </div>
     </div>
     <div class="kpi bl" onclick="showTab('cb')">
-      <div class="kpi-lbl">CB Due Tomorrow</div>
+      <div class="kpi-lbl">CB Due Tomorrow | Banks</div>
       <div class="kpi-val">35</div>
-      <div class="kpi-d dn">280.3M</div>
+      <div class="kpi-d dn"> 189 Transactions</div>
+      <div class="kpi-d dn"> 13.09M</div>
       <div class="sparkline">
         <div class="spk" style="height:40%;background:#BFDBFE;"></div><div class="spk" style="height:55%;background:#93C5FD;"></div><div class="spk" style="height:50%;background:#60A5FA;"></div><div class="spk" style="height:70%;background:#3B82F6;"></div><div class="spk" style="height:65%;background:#2563EB;"></div><div class="spk" style="height:80%;background:#1D4ED8;"></div><div class="spk" style="height:100%;background:#1E40AF;"></div>
       </div>
@@ -312,31 +315,34 @@ select.btn{appearance:none;padding-right:22px;background-image:url("data:image/s
     <div class="kpi bl" onclick="showTab('tcc')">
       <div class="kpi-lbl">TCC/RET | Banks</div>
       <div class="kpi-val">26</div>
-      <div class="kpi-d">280 Txns</div>
+      <div class="kpi-d dn"> 540 Transactions</div>
+      <div class="kpi-d dn"> 298K</div>
       <div class="sparkline">
         <div class="spk" style="height:40%;background:#BFDBFE;"></div><div class="spk" style="height:55%;background:#93C5FD;"></div><div class="spk" style="height:50%;background:#60A5FA;"></div><div class="spk" style="height:70%;background:#3B82F6;"></div><div class="spk" style="height:65%;background:#2563EB;"></div><div class="spk" style="height:80%;background:#1D4ED8;"></div><div class="spk" style="height:100%;background:#1E40AF;"></div>
       </div>
     </div>
     <div class="kpi gr" onclick="showTab('rrc')">
-      <div class="kpi-lbl">RRC</div>
+      <div class="kpi-lbl">RRC | Banks</div>
       <div class="kpi-val">28</div>
-      <div class="kpi-d dn"> 2050 transactions</div>
+      <div class="kpi-d dn"> 2050 Transactions</div>
+      <div class="kpi-d dn"> 18.09K</div>
       <div class="sparkline">
         <div class="spk" style="height:90%;background:#A7F3D0;"></div><div class="spk" style="height:88%;background:#6EE7B7;"></div><div class="spk" style="height:87%;background:#34D399;"></div><div class="spk" style="height:86%;background:#10B981;"></div><div class="spk" style="height:87%;background:#059669;"></div><div class="spk" style="height:85%;background:#047857;"></div><div class="spk" style="height:86%;background:#065F46;"></div>
       </div>
     </div>
     <div class="kpi rd" onclick="showTab('drc')">
-      <div class="kpi-lbl">DRC</div>
+      <div class="kpi-lbl">DRC | Banks</div>
       <div class="kpi-val">34</div>
-      <div class="kpi-d dn">1080 transactions</div>
+      <div class="kpi-d dn"> 14 Transactions</div>
+      <div class="kpi-d dn"> 980</div>
       <div class="sparkline">
         <div class="spk" style="height:30%;background:#FECACA;"></div><div class="spk" style="height:45%;background:#FCA5A5;"></div><div class="spk" style="height:35%;background:#F87171;"></div><div class="spk" style="height:50%;background:#EF4444;"></div><div class="spk" style="height:42%;background:#DC2626;"></div><div class="spk" style="height:55%;background:#B91C1C;"></div><div class="spk" style="height:60%;background:#991B1B;"></div>
       </div>
     </div>
     <div class="kpi am" onclick="showTab('pcom')">
-      <div class="kpi-lbl">PCOM</div>
+      <div class="kpi-lbl">PCOM Pending Banks</div>
       <div class="kpi-val">1170</div>
-      <div class="kpi-d dn">27 peniding banks</div>
+      <div class="kpi-d dn">27%</div>
       <div class="sparkline">
         <div class="spk" style="height:50%;background:#FDE68A;"></div><div class="spk" style="height:60%;background:#FCD34D;"></div><div class="spk" style="height:55%;background:#FBBF24;"></div><div class="spk" style="height:70%;background:#F59E0B;"></div><div class="spk" style="height:65%;background:#D97706;"></div><div class="spk" style="height:75%;background:#B45309;"></div><div class="spk" style="height:80%;background:#92400E;"></div>
       </div>
@@ -365,7 +371,7 @@ select.btn{appearance:none;padding-right:22px;background-image:url("data:image/s
         <div class="spk" style="height:60%;background:#BAE6FD;"></div><div class="spk" style="height:70%;background:#7DD3FC;"></div><div class="spk" style="height:75%;background:#38BDF8;"></div><div class="spk" style="height:80%;background:#0EA5E9;"></div><div class="spk" style="height:72%;background:#0284C7;"></div><div class="spk" style="height:78%;background:#0369A1;"></div><div class="spk" style="height:75%;background:#075985;"></div>
       </div>
     </div>
-    <div class="kpi te" onclick="showTab('tdbd')">
+    <div class="kpi te" onclick="showTab('zero')">
       <div class="kpi-lbl">Zero Approved % Banks</div>
       <div class="kpi-val">14</div>
       <div class="kpi-d dn"></div>
@@ -373,7 +379,7 @@ select.btn{appearance:none;padding-right:22px;background-image:url("data:image/s
         <div class="spk" style="height:60%;background:#BAE6FD;"></div><div class="spk" style="height:70%;background:#7DD3FC;"></div><div class="spk" style="height:75%;background:#38BDF8;"></div><div class="spk" style="height:80%;background:#0EA5E9;"></div><div class="spk" style="height:72%;background:#0284C7;"></div><div class="spk" style="height:78%;background:#0369A1;"></div><div class="spk" style="height:75%;background:#075985;"></div>
       </div>
     </div>
-    <div class="kpi te" onclick="showTab('tdbd')">
+    <div class="kpi te" onclick="showTab('td>2')">
       <div class="kpi-lbl">TD>2% Banks</div>
       <div class="kpi-val">74</div>
       <div class="kpi-d dn"></div>
@@ -381,7 +387,7 @@ select.btn{appearance:none;padding-right:22px;background-image:url("data:image/s
         <div class="spk" style="height:60%;background:#BAE6FD;"></div><div class="spk" style="height:70%;background:#7DD3FC;"></div><div class="spk" style="height:75%;background:#38BDF8;"></div><div class="spk" style="height:80%;background:#0EA5E9;"></div><div class="spk" style="height:72%;background:#0284C7;"></div><div class="spk" style="height:78%;background:#0369A1;"></div><div class="spk" style="height:75%;background:#075985;"></div>
       </div>
     </div>
-    <div class="kpi te" onclick="showTab('tdbd')">
+    <div class="kpi te" onclick="showTab('bd>5')">
       <div class="kpi-lbl">BD BI >5% Banks      </div>
       <div class="kpi-val">17</div>
       <div class="kpi-d dn"></div>
@@ -392,7 +398,7 @@ select.btn{appearance:none;padding-right:22px;background-image:url("data:image/s
   </div>
 
   <!-- Product Volume + RM Heatmap -->
-  <div class="g2">
+  <div class="g1">
     <div class="panel">
       <div class="ph"><div class="ph-ico" style="background:#EFF6FF;">📦</div><div class="ph-title">Product wise Volume Performance</div><div class="ph-r"><button class="btn" style="padding:3px 8px;font-size:10px;" onclick="showTab('tdbd')">Drill ↗</button></div></div>
       <table class="tbl">
@@ -407,21 +413,7 @@ select.btn{appearance:none;padding-right:22px;background-image:url("data:image/s
 </tbody>
       </table>
     </div>
-    <div class="panel">
-      <div class="ph"><div class="ph-ico" style="background:#FFF7ED;">👤</div><div class="ph-title">RM wise Bank Count — Approval Health</div><div class="ph-r"><span class="bdg r"></span></div></div>
-      <table class="tbl">
-        <thead><tr><th>RM Name</th><th class="r">Appr&lt;80%</th><th class="r">BD&gt;5%</th><th class="r">TD&gt;2%</th><th class="r" style="color:var(--red)">Appr=0%</th><th class="r">Action</th></tr></thead>
-       <tbody>
-  <tr><td class="bname drillable" onclick="drillRM('Ameya Save')">Ameya Save</td><td class="r">256</td><td class="r">108</td><td class="r">175</td><td class="r"><span class="hc h2">15</span></td><td class="r"><span class="bdg a">Review</span></td></tr>
-  <tr class="crit"><td class="bname drillable" onclick="drillRM('Deepak Panday')">Deepak Panday</td><td class="r">206</td><td class="r">62</td><td class="r">153</td><td class="r"><span class="hc h3">23</span></td><td class="r"><span class="bdg r">Alert</span></td></tr>
-  <tr><td class="bname drillable" onclick="drillRM('Divya Daiya')">Divya Daiya</td><td class="r">2</td><td class="r">0</td><td class="r">7</td><td class="r"><span class="hc h0">1</span></td><td class="r"><span class="bdg g">OK</span></td></tr>
-  <tr><td class="bname drillable" onclick="drillRM('Himanshu Lal')">Himanshu Lal</td><td class="r">44</td><td class="r">12</td><td class="r">26</td><td class="r"><span class="hc h0">1</span></td><td class="r"><span class="bdg g">OK</span></td></tr>
-  <tr><td class="bname drillable" onclick="drillRM('Mayur More')">Mayur More</td><td class="r">153</td><td class="r">50</td><td class="r">99</td><td class="r"><span class="hc h2">19</span></td><td class="r"><span class="bdg a">Review</span></td></tr>
-  <tr><td class="bname drillable" onclick="drillRM('Pratik Lohakane')">Pratik Lohakane</td><td class="r">108</td><td class="r">52</td><td class="r">68</td><td class="r"><span class="hc h2">15</span></td><td class="r"><span class="bdg a">Review</span></td></tr>
-  <tr class="tot"><td><b>Total</b></td><td class="r">769</td><td class="r">284</td><td class="r">528</td><td class="r"><span class="hc h3">74</span></td><td class="r"></td></tr>
-</tbody>
-      </table>
-    </div>
+    
   </div>
   
   <!-- CB Due + Deemed -->
@@ -651,14 +643,43 @@ function drillproduct_reason(bankName) {
   showTab('tdbd reason');
 }
 </script>
+
+<script>
+
+function drillproduct_reason1(bankName) {
+  window.selectedProduct = bankName;
+
+  
+  showTab('zero');
+}
+</script>
 <!--------->
 
-<!-----tD bd data---->
-<div id="page-tdbd data" class="page">
+
+<!-----zero approved---->
+<div id="page-zero" class="page">
   <div class="panel">
       <div class="ph"><div class="ph-ico" style="background:#EFF6FF;">📊</div><div class="ph-title">Bank wise Volume — Detailed</div></div>
       <table class="tbl">
-        <thead><tr><th>Bank Name</th><th class="r">Total Vol</th><th class="r">Appr Vol</th><th class="r">Appr %</th><th class="r">BD BI Vol</th><th class="r">BD BI %</th><th class="r">BD CI Vol</th><th class="r">BD CI %</th><th class="r">TD Vol</th><th class="r">TD %</th></tr></thead>
+        <thead><tr><th>Bank Name</th><th class="r">Total Vol</th><th class="r">Appr Vol</th><th class="r">Appr %</th><th class="r">BD BI Vol</th><th class="r">BD BI %</th><th class="r">BD CI Vol</th><th class="r">BD CI %</th><th class="r">TD Vol(SOP)</th><th class="r">TD %(SOP)</th></tr></thead>
+        <tbody>
+          <tr><td><b>CHHATTISGARH RAJYA GRAMIN BANK</b></td><td class="r mono">2,473,892</td><td class="r mono">0</td><td class="r"><span class="hc h2">0%</span></td><td class="r mono">261,089</td><td class="r"><span class="hc h3">10.55%</span></td><td class="r mono">95,179</td><td class="r">3.85%</td><td class="r mono">330,510</td><td class="r"><span class="hc h3">13.36%</span></td></tr>
+          <tr><td><b>VASAVI MSCM CO OP BANK LTD</b></td><td class="r mono">852,567</td><td class="r mono">0</td><td class="r"><span class="hc h1">0%</span></td><td class="r mono">5,472</td><td class="r"><span class="hc h0">0.64%</span></td><td class="r mono">26,067</td><td class="r">3.06%</td><td class="r mono">99,423</td><td class="r"><span class="hc h2">11.66%</span></td></tr>
+          <tr><td class="drillable" onclick="drillproduct_reason('BHARUCH DISTRICT CENTRAL CO OP')"><b>BHARUCH DISTRICT CENTRAL CO OP</b></td><td class="r mono">936,975</td><td class="r mono">0</td><td class="r"><span class="hc h1">0%</span></td><td class="r mono">14,441</td><td class="r"><span class="hc h0">1.54%</span></td><td class="r mono">121,088</td><td class="r">12.92%</td><td class="r mono">17,460</td><td class="r"><span class="hc h0">1.86%</span></td></tr>
+          <tr><td><b>BHARUCH DISTRICT CENTRAL CO OP</b></td><td class="r mono">118,086</td><td class="r mono">0</td><td class="r"><span class="hc h0">0%</span></td><td class="r mono">2,352</td><td class="r"><span class="hc h0">1.99%</span></td><td class="r mono">11,777</td><td class="r">9.97%</td><td class="r mono">2,593</td><td class="r"><span class="hc h0">2.20%</span></td></tr>
+          <tr><td><b>BHARUCH DISTRICT CENTRAL CO OP</b></td><td class="r mono">14,825,076</td><td class="r mono">0</td><td class="r"><span class="hc h0">0%</span></td><td class="r mono">57,998</td><td class="r"><span class="hc h0">0.39%</span></td><td class="r mono">15,066</td><td class="r">0.10%</td><td class="r mono">128,739</td><td class="r"><span class="hc h0">0.87%</span></td></tr>
+          <tr class="tot"><td><b>Total</b></td><td class="r mono">19,206,596</td><td class="r mono">0</td><td class="r"><span class="hc h1">0%</span></td><td class="r mono">341,352</td><td class="r"><span class="hc h1">1.78%</span></td><td class="r mono">269,177</td><td class="r">1.40%</td><td class="r mono">578,725</td><td class="r"><span class="hc h2">3.01%</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>  
+
+  <!-----tD>2%---->
+<div id="page-td>2" class="page">
+  <div class="panel">
+      <div class="ph"><div class="ph-ico" style="background:#EFF6FF;">📊</div><div class="ph-title">Bank wise Volume — Detailed</div></div>
+      <table class="tbl">
+        <thead><tr><th>Bank Name</th><th class="r">Total Vol</th><th class="r">Appr Vol</th><th class="r">Appr %</th><th class="r">BD BI Vol</th><th class="r">BD BI %</th><th class="r">BD CI Vol</th><th class="r">BD CI %</th><th class="r">TD Vol(SOP)</th><th class="r">TD %(SOP)</th></tr></thead>
         <tbody>
           <tr><td><b>CHHATTISGARH RAJYA GRAMIN BANK</b></td><td class="r mono">2,473,892</td><td class="r mono">1,516,072</td><td class="r"><span class="hc h2">61.28%</span></td><td class="r mono">261,089</td><td class="r"><span class="hc h3">10.55%</span></td><td class="r mono">95,179</td><td class="r">3.85%</td><td class="r mono">330,510</td><td class="r"><span class="hc h3">13.36%</span></td></tr>
           <tr><td><b>VASAVI MSCM CO OP BANK LTD</b></td><td class="r mono">852,567</td><td class="r mono">719,133</td><td class="r"><span class="hc h1">84.35%</span></td><td class="r mono">5,472</td><td class="r"><span class="hc h0">0.64%</span></td><td class="r mono">26,067</td><td class="r">3.06%</td><td class="r mono">99,423</td><td class="r"><span class="hc h2">11.66%</span></td></tr>
@@ -670,10 +691,46 @@ function drillproduct_reason(bankName) {
       </table>
     </div>
   </div>  
-  <!-----tD bd data---->
+
+
+  <!-----bd>5--->
+<div id="page-bd>5" class="page">
+  <div class="panel">
+      <div class="ph"><div class="ph-ico" style="background:#EFF6FF;">📊</div><div class="ph-title">Bank wise Volume — Detailed</div></div>
+      <table class="tbl">
+        <thead><tr><th>Bank Name</th><th class="r">Total Vol</th><th class="r">Appr Vol</th><th class="r">Appr %</th><th class="r">BD BI Vol</th><th class="r">BD BI %</th><th class="r">BD CI Vol</th><th class="r">BD CI %</th><th class="r">TD Vol(SOP)</th><th class="r">TD %(SOP)</th></tr></thead>
+        <tbody>
+          <tr><td><b>CHHATTISGARH RAJYA GRAMIN BANK</b></td><td class="r mono">2,473,892</td><td class="r mono">1,516,072</td><td class="r"><span class="hc h2">61.28%</span></td><td class="r mono">261,089</td><td class="r"><span class="hc h3">10.55%</span></td><td class="r mono">95,179</td><td class="r">3.85%</td><td class="r mono">330,510</td><td class="r"><span class="hc h3">13.36%</span></td></tr>
+          <tr><td><b>VASAVI MSCM CO OP BANK LTD</b></td><td class="r mono">852,567</td><td class="r mono">719,133</td><td class="r"><span class="hc h1">84.35%</span></td><td class="r mono">5,472</td><td class="r"><span class="hc h0">0.64%</span></td><td class="r mono">26,067</td><td class="r">3.06%</td><td class="r mono">99,423</td><td class="r"><span class="hc h2">11.66%</span></td></tr>
+          <tr><td class="drillable" onclick="drillproduct_reason('BHARUCH DISTRICT CENTRAL CO OP')"><b>BHARUCH DISTRICT CENTRAL CO OP</b></td><td class="r mono">936,975</td><td class="r mono">749,069</td><td class="r"><span class="hc h1">79.95%</span></td><td class="r mono">14,441</td><td class="r"><span class="hc h0">1.54%</span></td><td class="r mono">121,088</td><td class="r">12.92%</td><td class="r mono">17,460</td><td class="r"><span class="hc h0">1.86%</span></td></tr>
+          <tr><td><b>BHARUCH DISTRICT CENTRAL CO OP</b></td><td class="r mono">118,086</td><td class="r mono">101,319</td><td class="r"><span class="hc h0">85.80%</span></td><td class="r mono">2,352</td><td class="r"><span class="hc h0">1.99%</span></td><td class="r mono">11,777</td><td class="r">9.97%</td><td class="r mono">2,593</td><td class="r"><span class="hc h0">2.20%</span></td></tr>
+          <tr><td><b>BHARUCH DISTRICT CENTRAL CO OP</b></td><td class="r mono">14,825,076</td><td class="r mono">13,525,925</td><td class="r"><span class="hc h0">91.24%</span></td><td class="r mono">57,998</td><td class="r"><span class="hc h0">0.39%</span></td><td class="r mono">15,066</td><td class="r">0.10%</td><td class="r mono">128,739</td><td class="r"><span class="hc h0">0.87%</span></td></tr>
+          <tr class="tot"><td><b>Total</b></td><td class="r mono">19,206,596</td><td class="r mono">16,611,518</td><td class="r"><span class="hc h1">86.49%</span></td><td class="r mono">341,352</td><td class="r"><span class="hc h1">1.78%</span></td><td class="r mono">269,177</td><td class="r">1.40%</td><td class="r mono">578,725</td><td class="r"><span class="hc h2">3.01%</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>  
+<!-----tD bd data---->
+<div id="page-tdbd data" class="page">
+  <div class="panel">
+      <div class="ph"><div class="ph-ico" style="background:#EFF6FF;">📊</div><div class="ph-title">Bank wise Volume — Detailed</div></div>
+      <table class="tbl">
+        <thead><tr><th>Bank Name</th><th class="r">Total Vol</th><th class="r">Appr Vol</th><th class="r">Appr %</th><th class="r">BD BI Vol</th><th class="r">BD BI %</th><th class="r">BD CI Vol</th><th class="r">BD CI %</th><th class="r">TD Vol(SOP)</th><th class="r">TD %(SOP)</th></tr></thead>
+        <tbody>
+          <tr><td><b>CHHATTISGARH RAJYA GRAMIN BANK</b></td><td class="r mono">2,473,892</td><td class="r mono">1,516,072</td><td class="r"><span class="hc h2">61.28%</span></td><td class="r mono">261,089</td><td class="r"><span class="hc h3">10.55%</span></td><td class="r mono">95,179</td><td class="r">3.85%</td><td class="r mono">330,510</td><td class="r"><span class="hc h3">13.36%</span></td></tr>
+          <tr><td><b>VASAVI MSCM CO OP BANK LTD</b></td><td class="r mono">852,567</td><td class="r mono">719,133</td><td class="r"><span class="hc h1">84.35%</span></td><td class="r mono">5,472</td><td class="r"><span class="hc h0">0.64%</span></td><td class="r mono">26,067</td><td class="r">3.06%</td><td class="r mono">99,423</td><td class="r"><span class="hc h2">11.66%</span></td></tr>
+          <tr><td class="drillable" onclick="drillproduct_reason('BHARUCH DISTRICT CENTRAL CO OP')"><b>BHARUCH DISTRICT CENTRAL CO OP</b></td><td class="r mono">936,975</td><td class="r mono">749,069</td><td class="r"><span class="hc h1">79.95%</span></td><td class="r mono">14,441</td><td class="r"><span class="hc h0">1.54%</span></td><td class="r mono">121,088</td><td class="r">12.92%</td><td class="r mono">17,460</td><td class="r"><span class="hc h0">1.86%</span></td></tr>
+          <tr><td><b>BHARUCH DISTRICT CENTRAL CO OP</b></td><td class="r mono">118,086</td><td class="r mono">101,319</td><td class="r"><span class="hc h0">85.80%</span></td><td class="r mono">2,352</td><td class="r"><span class="hc h0">1.99%</span></td><td class="r mono">11,777</td><td class="r">9.97%</td><td class="r mono">2,593</td><td class="r"><span class="hc h0">2.20%</span></td></tr>
+          <tr><td><b>BHARUCH DISTRICT CENTRAL CO OP</b></td><td class="r mono">14,825,076</td><td class="r mono">13,525,925</td><td class="r"><span class="hc h0">91.24%</span></td><td class="r mono">57,998</td><td class="r"><span class="hc h0">0.39%</span></td><td class="r mono">15,066</td><td class="r">0.10%</td><td class="r mono">128,739</td><td class="r"><span class="hc h0">0.87%</span></td></tr>
+          <tr class="tot"><td><b>Total</b></td><td class="r mono">19,206,596</td><td class="r mono">16,611,518</td><td class="r"><span class="hc h1">86.49%</span></td><td class="r mono">341,352</td><td class="r"><span class="hc h1">1.78%</span></td><td class="r mono">269,177</td><td class="r">1.40%</td><td class="r mono">578,725</td><td class="r"><span class="hc h2">3.01%</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>  
+  <!-----tD bd reason--->
 <div id="page-tdbd reason" class="page">
   <div class="panel">
-      <div class="ph"><div class="ph-ico" style="background:#EFF6FF;">📊</div><div class="ph-title">Technical Decline</div></div>
+      <div class="ph"><div class="ph-ico" style="background:#EFF6FF;">📊</div><div class="ph-title">Technical Decline(SOP)</div></div>
       <table class="tbl">
         <thead><tr><th>Reason Code</th><th>Reason Desc</th><th class="r">Volume</th><th class="r">% of Total TD</th></thead>
         <tbody>
@@ -824,34 +881,36 @@ function drillproduct_deemed(productName) {
 
 <!-----CB Dues---->
 <div id="page-cb dues" class="page">
-  <div class="g2">
+  <div class="g1">
     <div class="panel">
       <div class="ph"><div class="ph-ico" style="background:#FEF2F2;">🏦</div><div class="ph-title">Bank Details — CB Due Today</div></div>
       <table class="tbl">
-        <thead><tr><th>Bank Name</th><th>Product</th><th>Code</th><th>RM</th><th class="r">Vol</th><th class="r">Value (₹)</th></tr></thead>
+        <thead><tr><th>Bank Name</th><th>Product</th><th>Code</th><th>Txn Date</th><th class="r">RRN</th><th class="r">Value (₹)</th></tr></thead>
         <tbody>
-          <tr class="crit"><td class="bname" style="font-size:10.5px;">CHHATTISGARH RAJYA GRAMIN BANK</td><td>AEPS</td><td><span class="ctag">CGU</span></td><td style="font-size:10px;">Ameya Save</td><td class="r mono">2</td><td class="r mono">1,000</td></tr>
-          <tr class="crit"><td class="bname" style="font-size:10.5px;">VASAVI MSCM CO OP BANK LTD</td><td>IMPS</td><td><span class="ctag">VML</span></td><td style="font-size:10px;">Mayur More</td><td class="r mono">1</td><td class="r mono">5,000</td></tr>
-          <tr class="crit"><td class="bname" style="font-size:10.5px;">BHARUCH DISTRICT CENTRAL CO OP</td><td>NFS</td><td><span class="ctag">BHR</span></td><td style="font-size:10px;">Mayur More</td><td class="r mono">1</td><td class="r mono">7,000</td></tr>
-          <tr class="warn"><td class="bname" style="font-size:10.5px;">RAJARSHI SHAHU SAHAKARI BANK PUNE</td><td>UPI-FC-WC</td><td><span class="ctag">RJH</span></td><td style="font-size:10px;">Deepak Panday</td><td class="r mono">1</td><td class="r mono">20,000</td></tr>
-          <tr class="warn"><td class="bname" style="font-size:10.5px;">AHMEDABAD DIST CO OP BANK</td><td>UPI-FC-WC</td><td><span class="ctag">AHD</span></td><td style="font-size:10px;">Mayur More</td><td class="r mono">1</td><td class="r mono">30,000</td></tr>
-          <tr class="warn"><td class="bname" style="font-size:10.5px;">HARYANA STATE CO OP APEX BANK</td><td>UPI-FC-WC</td><td><span class="ctag">HSC</span></td><td style="font-size:10px;">Pratik Lohakane</td><td class="r mono">1</td><td class="r mono">36,960</td></tr>
-          <tr class="warn"><td class="bname" style="font-size:10.5px;">MUZAFFARNAGAR DISTRICT CO OP</td><td>UPI P2P B U3</td><td><span class="ctag">MDC</span></td><td style="font-size:10px;">Deepak Panday</td><td class="r mono">2</td><td class="r mono">35,150</td></tr>
+          <tr class="crit"><td class="bname" style="font-size:10.5px;">CHHATTISGARH RAJYA GRAMIN BANK</td><td>AEPS</td><td><span class="ctag">CGU</span></td><td style="font-size:10px;">20/01/2026</td><td class="r mono">2987652345</td><td class="r mono">1,000</td></tr>
+          <tr class="crit"><td class="bname" style="font-size:10.5px;">VASAVI MSCM CO OP BANK LTD</td><td>IMPS</td><td><span class="ctag">VML</span></td><td style="font-size:10px;">09/02/2026</td><td class="r mono">12987652345</td><td class="r mono">5,000</td></tr>
+          <tr class="crit"><td class="bname" style="font-size:10.5px;">BHARUCH DISTRICT CENTRAL CO OP</td><td>NFS</td><td><span class="ctag">BHR</span></td><td style="font-size:10px;">18/01/2026</td><td class="r mono">12987652345</td><td class="r mono">7,000</td></tr>
+          <tr class="warn"><td class="bname" style="font-size:10.5px;">RAJARSHI SHAHU SAHAKARI BANK PUNE</td><td>UPI-FC-WC</td><td><span class="ctag">RJH</span></td><td style="font-size:10px;">02/03/2026</td><td class="r mono">12987652345</td><td class="r mono">20,000</td></tr>
+          <tr class="warn"><td class="bname" style="font-size:10.5px;">AHMEDABAD DIST CO OP BANK</td><td>UPI-FC-WC</td><td><span class="ctag">AHD</span></td><td style="font-size:10px;">20/01/2026</td><td class="r mono">12987652345</td><td class="r mono">30,000</td></tr>
+          <tr class="warn"><td class="bname" style="font-size:10.5px;">HARYANA STATE CO OP APEX BANK</td><td>UPI-FC-WC</td><td><span class="ctag">HSC</span></td><td style="font-size:10px;">20/01/2026</td><td class="r mono">12987652345</td><td class="r mono">36,960</td></tr>
+          <tr class="warn"><td class="bname" style="font-size:10.5px;">MUZAFFARNAGAR DISTRICT CO OP</td><td>UPI P2P B U3</td><td><span class="ctag">MDC</span></td><td style="font-size:10px;">17/04/2026</td><td class="r mono">22987652345</td><td class="r mono">35,150</td></tr>
         </tbody>
       </table>
     </div>
+  </div>
+  <div class="g1">
     <div class="panel">
-      <div class="ph"><div class="ph-ico" style="background:#FFF7ED;">🏦</div><div class="ph-title">Bank Details — CB Due Tomorrow</div></div>
+      <div class="ph"><div class="ph-ico" style="background:#FEF2F2;">🏦</div><div class="ph-title">Bank Details — CB Due Tomorrow</div></div>
       <table class="tbl">
-        <thead><tr><th>Bank Name</th><th>Product</th><th>Code</th><th>RM</th><th class="r">Vol</th><th class="r">Value (₹)</th></tr></thead>
+        <thead><tr><th>Bank Name</th><th>Product</th><th>Code</th><th>Txn Date</th><th class="r">RRN</th><th class="r">Value (₹)</th></tr></thead>
         <tbody>
-          <tr><td class="bname" style="font-size:10.5px;">BHAVNAGAR DISTRICT CO OP BANK</td><td>IMPS</td><td><span class="ctag">BVN</span></td><td style="font-size:10px;">Mayur More</td><td class="r mono">12</td><td class="r mono">1,499</td></tr>
-          <tr><td class="bname" style="font-size:10.5px;">AGRASEN NAGARI SAHAKARI BANK AKOLA</td><td>IMPS</td><td><span class="ctag">ASX</span></td><td style="font-size:10px;">Pratik Lohakane</td><td class="r mono">1</td><td class="r mono">12</td></tr>
-          <tr><td class="bname" style="font-size:10.5px;">JILA SAHAKARI KENDRIYA MARYADIT</td><td>NFS</td><td><span class="ctag">ZSR</span></td><td style="font-size:10px;">Ameya Save</td><td class="r mono">1</td><td class="r mono">9,500</td></tr>
-          <tr><td class="bname" style="font-size:10.5px;">URBAN CO OP BANK 1758 PERINTHALMANNA</td><td>NFS</td><td><span class="ctag">UPR</span></td><td style="font-size:10px;">Pratik Lohakane</td><td class="r mono">1</td><td class="r mono">1,000</td></tr>
-          <tr><td class="bname" style="font-size:10.5px;">DOMBIVLI NAGARI SAHAKARI BANK</td><td>UPI-FC-WC</td><td><span class="ctag">DSB</span></td><td style="font-size:10px;">Ameya Save</td><td class="r mono">2</td><td class="r mono">14,151</td></tr>
-          <tr><td class="bname" style="font-size:10.5px;">CHIKHLI URBAN CO OP BANK</td><td>UPI-FC-WC</td><td><span class="ctag">CKL</span></td><td style="font-size:10px;">Deepak Panday</td><td class="r mono">1</td><td class="r mono">30,000</td></tr>
-          <tr><td class="bname" style="font-size:10.5px;">HARYANA STATE CO OP APEX BANK</td><td>UPI-FC-WC</td><td><span class="ctag">HSC</span></td><td style="font-size:10px;">Pratik Lohakane</td><td class="r mono">1</td><td class="r mono">21,875</td></tr>
+          <tr class="crit"><td class="bname" style="font-size:10.5px;">CHHATTISGARH RAJYA GRAMIN BANK</td><td>AEPS</td><td><span class="ctag">CGU</span></td><td style="font-size:10px;">20/01/2026</td><td class="r mono">22987652345</td><td class="r mono">1,000</td></tr>
+          <tr class="crit"><td class="bname" style="font-size:10.5px;">VASAVI MSCM CO OP BANK LTD</td><td>IMPS</td><td><span class="ctag">VML</span></td><td style="font-size:10px;">09/02/2026</td><td class="r mono">12567917557</td><td class="r mono">5,000</td></tr>
+          <tr class="crit"><td class="bname" style="font-size:10.5px;">BHARUCH DISTRICT CENTRAL CO OP</td><td>NFS</td><td><span class="ctag">BHR</span></td><td style="font-size:10px;">18/01/2026</td><td class="r mono">12567917557</td><td class="r mono">7,000</td></tr>
+          <tr class="warn"><td class="bname" style="font-size:10.5px;">RAJARSHI SHAHU SAHAKARI BANK PUNE</td><td>UPI-FC-WC</td><td><span class="ctag">RJH</span></td><td style="font-size:10px;">02/03/2026</td><td class="r mono">112567917557</td><td class="r mono">20,000</td></tr>
+          <tr class="warn"><td class="bname" style="font-size:10.5px;">AHMEDABAD DIST CO OP BANK</td><td>UPI-FC-WC</td><td><span class="ctag">AHD</span></td><td style="font-size:10px;">20/01/2026</td><td class="r mono">98767917557</td><td class="r mono">30,000</td></tr>
+          <tr class="warn"><td class="bname" style="font-size:10.5px;">HARYANA STATE CO OP APEX BANK</td><td>UPI-FC-WC</td><td><span class="ctag">HSC</span></td><td style="font-size:10px;">20/01/2026</td><td class="r mono">12567917557</td><td class="r mono">36,960</td></tr>
+          <tr class="warn"><td class="bname" style="font-size:10.5px;">MUZAFFARNAGAR DISTRICT CO OP</td><td>UPI P2P B U3</td><td><span class="ctag">MDC</span></td><td style="font-size:10px;">17/04/2026</td><td class="r mono">12567917557</td><td class="r mono">35,150</td></tr>
         </tbody>
       </table>
     </div>

@@ -648,8 +648,8 @@ function drillproduct(productName) {
 function drillproduct_tdbd(productName) {
   window.selectedProduct = productName;
 
-  const bankTitle = document.querySelector('#page-tdbd .pg-title');
-  const bankSub   = document.querySelector('#page-tdbd .pg-sub');
+  const bankTitle = document.querySelector('#page-t .pg-title');
+  const bankSub   = document.querySelector('#page-t .pg-sub');
   if (bankTitle) bankTitle.textContent = 'Bank Wise — ' + productName;
   if (bankSub)   bankSub.textContent   = 'Product: ' + productName;
 

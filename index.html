@@ -1,0 +1,1675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NPCI CCU Team — Bank Monitoring & Performance Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#1a2744;--blue:#2563EB;--accent:#F97316;--teal:#0EA5E9;
+  --green:#10B981;--red:#EF4444;--amber:#F59E0B;--purple:#8B5CF6;
+  --surface:#F1F5F9;--card:#FFFFFF;--border:#E2E8F0;
+  --text1:#0F172A;--text2:#475569;--text3:#94A3B8;
+  --sidebar:220px;--header:54px;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text1);font-size:13px;overflow:hidden;}
+/* ── HEADER ── */
+.hdr{position:fixed;top:0;left:0;right:0;height:var(--header);background:var(--navy);display:flex;align-items:center;padding:0 16px;z-index:200;gap:14px;border-bottom:1px solid rgba(255,255,255,0.07);}
+.hdr-logo{display:flex;align-items:center;gap:10px;}
+.logo-sq{width:30px;height:30px;background:var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;letter-spacing:-0.5px;}
+.logo-txt{font-size:13px;font-weight:600;color:#fff;line-height:1.2;}
+.logo-sub{font-size:9px;color:rgba(255,255,255,0.45);letter-spacing:0.6px;text-transform:uppercase;}
+.hdr-div{width:1px;height:24px;background:rgba(255,255,255,0.1);}
+.hdr-lbl{font-size:12px;color:rgba(255,255,255,0.55);}
+.hdr-r{margin-left:auto;display:flex;align-items:center;gap:10pfx;}
+.hchip{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:18px;padding:4px 11px;font-size:11px;color:rgba(255,255,255,0.65);display:flex;align-items:center;gap:5px;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.hchip:hover{background:rgba(255,255,255,0.12);}
+.hchip select{background:none;border:none;color:rgba(255,255,255,0.65);font-size:11px;font-family:'DM Sans',sans-serif;cursor:pointer;outline:none;}
+.live-dot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 2px rgba(16,185,129,0.3)}50%{box-shadow:0 0 0 4px rgba(16,185,129,0.12)}}
+.bell-btn{width:30px;height:30px;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.25);border-radius:7px;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;font-size:13px;}
+.bell-cnt{position:absolute;top:-4px;right:-4px;background:var(--red);width:14px;height:14px;border-radius:50%;font-size:8px;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;}
+.avatar{width:30px;height:30px;background:linear-gradient(135deg,var(--teal),var(--blue));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:#fff;cursor:pointer;}
+/* ── LAYOUT ── */
+.layout{display:flex;margin-top:var(--header);height:calc(100vh - var(--header));overflow:hidden;}
+/* ── SIDEBAR ── */
+.sidebar{width:var(--sidebar);background:#fff;border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0;}
+.sb-sec{padding:6px 0;}
+.sb-lbl{font-size:9px;font-weight:700;color:var(--text3);letter-spacing:1px;text-transform:uppercase;padding:8px 14px 3px;}
+.nav{display:flex;align-items:center;gap:9px;padding:7px 14px;cursor:pointer;border-left:3px solid transparent;transition:all 0.12s;color:var(--text2);font-size:12px;}
+.nav:hover{background:#F8FAFC;color:var(--text1);}
+.nav.on{background:#EFF6FF;color:var(--blue);border-left-color:var(--blue);font-weight:500;}
+.nav-ico{font-size:13px;width:18px;text-align:center;flex-shrink:0;}
+.nav-badge{margin-left:auto;border-radius:10px;padding:1px 6px;font-size:9px;font-weight:700;}
+.nb-r{background:#FEE2E2;color:#991B1B;}
+.nb-a{background:#FEF3C7;color:#92400E;}
+.nb-g{background:#D1FAE5;color:#065F46;}
+.nb-b{background:#DBEAFE;color:#1E40AF;}
+.sb-footer{margin-top:auto;padding:10px;border-top:1px solid var(--border);}
+/* ── MAIN ── */
+.main{flex:1;overflow-y:auto;display:flex;flex-direction:column;}
+/* ── TAB BAR ── */
+.tab-bar{background:#fff;border-bottom:1px solid var(--border);padding:0 16px;display:flex;gap:2px;overflow-x:auto;flex-shrink:0;position:sticky;top:0;z-index:100;}
+.tab-bar::-webkit-scrollbar{height:2px;}
+.tab{padding:12px 14px;font-size:11.5px;font-weight:500;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;transition:all 0.12s;}
+.tab:hover{color:var(--text1);}
+.tab.on{color:var(--blue);border-bottom-color:var(--blue);}
+/* ── PAGE ── */
+.page{display:none;padding:16px;flex-direction:column;gap:14px;}
+.page.on{display:flex;}
+/* ── PAGE HEADER ── */
+.pg-hdr{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+.pg-title{font-size:17px;font-weight:700;color:var(--text1);}
+.pg-sub{font-size:11px;color:var(--text3);margin-top:2px;}
+.pg-ctrls{display:flex;gap:7px;align-items:center;flex-shrink:0;}
+.btn{border:1px solid var(--border);background:#fff;border-radius:7px;padding:6px 12px;font-size:11px;font-family:'DM Sans',sans-serif;color:var(--text2);cursor:pointer;display:flex;align-items:center;gap:5px;}
+.btn:hover{background:var(--surface);border-color:#CBD5E1;}
+.btn.pri{background:var(--blue);color:#fff;border-color:var(--blue);font-weight:500;}
+.btn.pri:hover{background:#1D4ED8;}
+select.btn{appearance:none;padding-right:22px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='5' fill='none'%3E%3Cpath d='M1 1l3.5 3L8 1' stroke='%2364748B' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 7px center;}
+/* ── ALERT BANNER ── */
+.alert-ban{background:#FFF7ED;border:1px solid #FED7AA;border-radius:9px;padding:9px 14px;display:flex;align-items:center;gap:10px;}
+.aico{width:26px;height:26px;background:#FEF3C7;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;}
+.atxt{font-size:11.5px;color:#92400E;font-weight:500;flex:1;}
+.achips{display:flex;gap:5px;flex-wrap:wrap;}
+.achip{border-radius:18px;padding:2px 8px;font-size:10px;font-weight:600;cursor:pointer;}
+.ac-r{background:#FEE2E2;border:1px solid #FCA5A5;color:#991B1B;}
+.ac-a{background:#FEF3C7;border:1px solid #FCD34D;color:#92400E;}
+.ac-b{background:#EFF6FF;border:1px solid #93C5FD;color:#1E40AF;}
+/* ── RM FILTER ── */
+.rm-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.rm-lbl{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;}
+.rm-pill{border:1px solid var(--border);background:#fff;border-radius:18px;padding:4px 12px;font-size:11px;cursor:pointer;color:var(--text2);transition:all 0.12s;}
+.rm-pill:hover,.rm-pill.on{background:var(--blue);color:#fff;border-color:var(--blue);font-weight:500;}
+/* ── KPI STRIP ── */
+.kpi-row{display:grid;grid-template-columns:repeat(6,1fr);gap:9px;}
+.kpi{background:#fff;border:1px solid var(--border);border-radius:10px;padding:11px 13px;cursor:pointer;position:relative;overflow:hidden;transition:all 0.12s;}
+.kpi:hover{transform:translateY(-1px);box-shadow:0 3px 12px rgba(0,0,0,0.07);}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.kpi.bl::before{background:var(--blue)}.kpi.gr::before{background:var(--green)}.kpi.rd::before{background:var(--red)}.kpi.am::before{background:var(--amber)}.kpi.pu::before{background:var(--purple)}.kpi.te::before{background:var(--teal)}
+.kpi-lbl{font-size:9.5px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;font-weight:600;}
+.kpi-val{font-size:22px;font-weight:700;font-family:'DM Mono',monospace;margin:3px 0 2px;color:var(--text1);}
+.kpi-d{font-size:10px;display:flex;align-items:center;gap:3px;}
+.kpi-d.up{color:var(--green)}.kpi-d.dn{color:var(--red)}.kpi-d.neu{color:var(--text3)}
+.sparkline{height:24px;display:flex;align-items:flex-end;gap:2px;margin-top:7px;}
+.spk{flex:1;border-radius:2px;min-width:4px;}
+/* ── GRID ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;}
+.g31{display:grid;grid-template-columns:3fr 1fr;gap:12px;}
+.g13{display:grid;grid-template-columns:1fr 3fr;gap:12px;}
+/* ── PANEL ── */
+.panel{background:#fff;border:1px solid var(--border);border-radius:11px;overflow:hidden;}
+.ph{padding:11px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;}
+.ph-ico{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;}
+.ph-title{font-size:12.5px;font-weight:600;color:var(--text1);flex:1;}
+.ph-r{display:flex;gap:5px;align-items:center;}
+.pb{padding:12px 14px;}
+/* ── BADGE ── */
+.bdg{display:inline-flex;align-items:center;gap:3px;border-radius:18px;padding:2px 8px;font-size:10px;font-weight:600;}
+.bdg.r{background:#FEE2E2;color:#991B1B}.bdg.g{background:#D1FAE5;color:#065F46}.bdg.a{background:#FEF3C7;color:#92400E}.bdg.b{background:#EFF6FF;color:#1E40AF}.bdg.gr{background:#F1F5F9;color:#475569}
+.bdot{width:5px;height:5px;border-radius:50%;}
+.bdg.r .bdot{background:#EF4444}.bdg.g .bdot{background:#10B981}.bdg.a .bdot{background:#F59E0B}
+/* ── TABLE ── */
+.tbl{width:100%;border-collapse:collapse;font-size:11.5px;}
+.tbl th{text-align:left;padding:7px 9px;font-size:9.5px;text-transform:uppercase;letter-spacing:0.4px;color:var(--text3);font-weight:700;border-bottom:1px solid var(--border);background:#FAFAFA;white-space:nowrap;}
+.tbl th.r,.tbl td.r{text-align:right;}
+.tbl td{padding:6px 9px;border-bottom:1px solid #F8FAFC;color:var(--text1);}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tr:hover td{background:#F8FAFC;}
+.tbl tr.tot td{font-weight:600;background:#FAFAFA;border-top:1.5px solid var(--border);}
+.tbl tr.crit td{background:#FFF5F5;}
+.tbl tr.warn td{background:#FFFBEB;}
+.mono{font-family:'DM Mono',monospace;}
+.bname{font-weight:500;}
+.ctag{font-family:'DM Mono',monospace;font-size:9.5px;background:#F1F5F9;padding:2px 5px;border-radius:4px;color:var(--text2);}
+/* ── HEAT CELL ── */
+.hc{display:inline-block;border-radius:4px;padding:2px 7px;font-family:'DM Mono',monospace;font-size:10.5px;font-weight:600;min-width:36px;text-align:right;}
+.h0{background:#D1FAE5;color:#065F46}.h1{background:#FEF9C3;color:#92400E}.h2{background:#FED7AA;color:#9A3412}.h3{background:#FECACA;color:#991B1B}.h4{background:#EF4444;color:#fff}
+/* ── PROGRESS ── */
+.prow{display:flex;align-items:center;gap:9px;padding:4px 0;}
+.plbl{font-size:11px;color:var(--text2);width:95px;flex-shrink:0;}
+.ptrack{flex:1;height:6px;background:#F1F5F9;border-radius:3px;overflow:hidden;}
+.pfill{height:100%;border-radius:3px;}
+.pval{font-size:11px;font-family:'DM Mono',monospace;font-weight:500;width:40px;text-align:right;flex-shrink:0;}
+/* ── TREND ── */
+.trow{display:grid;grid-template-columns:75px 1fr 52px;align-items:center;gap:9px;padding:4px 0;border-bottom:1px solid #F8FAFC;}
+.trow:last-child{border-bottom:none;}
+.tlbl{font-size:11px;color:var(--text2);}
+.ttrack{height:9px;background:#F1F5F9;border-radius:4px;overflow:hidden;}
+.tbar{height:100%;border-radius:4px;}
+.tval{font-size:11px;font-family:'DM Mono',monospace;font-weight:600;text-align:right;}
+/* ── FUNNEL ── */
+.fstep{display:flex;align-items:center;gap:11px;padding:9px 0;border-bottom:1px solid var(--border);}
+.fstep:last-child{border-bottom:none;}
+.fnum{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
+.fbody{flex:1;}
+.fname{font-size:12px;font-weight:500;}
+.fmeta{font-size:10px;color:var(--text3);margin-top:1px;}
+.fbar-wrap{width:110px;}
+.ftrack{height:7px;background:#F1F5F9;border-radius:3px;overflow:hidden;}
+.ffill{height:100%;border-radius:3px;}
+.fcnt{font-size:13px;font-weight:700;font-family:'DM Mono',monospace;width:34px;text-align:right;flex-shrink:0;}
+/* ── INSIGHT CARD ── */
+.icard{border-radius:9px;padding:11px 13px;border:1px solid;}
+.icard.r{background:#FFF5F5;border-color:#FECACA;}
+.icard.a{background:#FFFBEB;border-color:#FDE68A;}
+.icard.g{background:#F0FDF4;border-color:#BBF7D0;}
+.icard.b{background:#EFF6FF;border-color:#BFDBFE;}
+.icard.p{background:#FAF5FF;border-color:#DDD6FE;}
+.ititle{font-size:11.5px;font-weight:600;margin-bottom:3px;}
+.icard.r .ititle{color:#991B1B}.icard.a .ititle{color:#92400E}.icard.g .ititle{color:#065F46}.icard.b .ititle{color:#1E40AF}.icard.p .ititle{color:#5B21B6}
+.itext{font-size:10.5px;line-height:1.55;}
+.icard.r .itext{color:#B91C1C}.icard.a .itext{color:#B45309}.icard.g .itext{color:#047857}.icard.b .itext{color:#1D4ED8}.icard.p .itext{color:#6D28D9}
+/* ── SECTION HEAD ── */
+.sh{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--text3);padding:3px 0 8px;border-bottom:1px solid var(--border);margin-bottom:9px;}
+/* ── MINI STATS ── */
+.mstat-row{display:flex;gap:8px;margin-bottom:10px;}
+.mstat{flex:1;border-radius:8px;padding:8px;text-align:center;}
+.mstat-val{font-size:17px;font-weight:700;font-family:'DM Mono',monospace;}
+.mstat-lbl{font-size:9.5px;margin-top:2px;}
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#CBD5E1;border-radius:2px}
+/* ── FOOTER ── */
+.footer{padding:10px 16px;border-top:1px solid var(--border);background:#fff;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+/* ── MODAL OVERLAY ── */
+.modal-ov{position:fixed;inset:0;background:rgba(15,23,42,0.5);z-index:500;display:none;align-items:center;justify-content:center;}
+.modal-ov.on{display:flex;}
+.modal{background:#fff;border-radius:14px;width:720px;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.2);}
+.modal-hdr{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.modal-title{font-size:15px;font-weight:600;}
+.modal-close{width:28px;height:28px;border-radius:7px;background:#F1F5F9;border:none;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;}
+.modal-body{padding:20px;}
+/* ── PRINT ── */
+@media print{
+  .sidebar,.hdr,.tab-bar,.pg-ctrls,.footer{display:none!important;}
+  .layout,.main{display:block!important;height:auto!important;overflow:visible!important;}
+  .page{display:flex!important;}
+}
+</style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<div class="hdr">
+  <div class="hdr-logo">
+    <div class="logo-sq">NP</div>
+    <div>
+      <div class="logo-txt">NPCI Dashboard</div>
+      <div class="logo-sub">Bank Monitoring & MIS</div>
+    </div>
+  </div>
+  <div class="hdr-div"></div>
+  <div class="hdr-lbl">Performance Dashboard</div>
+  <div class="hdr-r">
+    <div class="hchip"><div class="live-dot"></div> Live · 14 Mar 2026</div>
+    <div class="hchip">
+      <select id="g-period" onchange="updatePeriod(this.value)">
+        <option value="ld">Last Day</option>
+        <option value="mtd" selected>MTD</option>
+        <option value="wk">Weekly</option>
+        <option value="mo">Monthly</option>
+        <option value="qtd">QTD</option>
+      </select>
+    </div>
+    <div class="hchip">
+      <select id="g-rm" onchange="updateRM(this.value)">
+        <option value="all">All RMs</option>
+        <option value="ameya">Ameya Save</option>
+        <option value="deepak">Deepak Panday</option>
+        <option value="mayur">Mayur More</option>
+        <option value="pratik">Pratik Lohakane</option>
+        <option value="himanshu">Himanshu Lal</option>
+        <option value="divya">Divya Daiya</option>
+      </select>
+    </div>
+    <div class="bell-btn" onclick="openModal('alertModal')"><span>🔔</span><span class="bell-cnt">7</span></div>
+    <div class="avatar" title="CCU Manager">CC</div>
+  </div>
+</div>
+
+<!-- ── LAYOUT ── -->
+<div class="layout">
+
+<!-- ── SIDEBAR ── -->
+<div class="sidebar">
+  <div class="sb-sec">
+    <div class="sb-lbl">Overview</div>
+    <div class="nav on" onclick="showTab('overview',this)"><span class="nav-ico">📊</span>Overview</div>
+    <div class="nav on" onclick="showTab('business',this)"><span class="nav-ico">📊</span>Business</div>
+    <div class="nav" onclick="showTab('bankmaster',this)"><span class="nav-ico">🏦</span>Bank Data</div>
+    <div class="nav" onclick="showTab('rm',this)"><span class="nav-ico">👥</span>RM Performance</div>
+  </div>
+  <div class="sb-sec">
+    <div class="sb-lbl">KPI Modules</div>
+    <div class="nav" onclick="showTab('tdbd',this)"><span class="nav-ico">⚡</span>TD / BD Performance</div>
+    <div class="nav" onclick="showTab('cb',this)"><span class="nav-ico">🔄</span>Chargeback & Deemed<span class="nav-badge nb-r">3</span></div>
+    <div class="nav" onclick="showTab('tcc',this)"><span class="nav-ico">📋</span>TCC / RET<span class="nav-badge nb-a">23</span></div>
+    <div class="nav" onclick="showTab('rrc',this)"><span class="nav-ico">💰</span>RRC <span class="nav-badge nb-r">141</span></div>
+    <div class="nav" onclick="showTab('drc',this)"><span class="nav-ico">📌</span>DRC </div>
+    <div class="nav" onclick="showTab('crm',this)"><span class="nav-ico">🎫</span>CRM Tickets<span class="nav-badge nb-a">12</span></div>
+    <div class="nav" onclick="showTab('gst',this)"><span class="nav-ico">🧾</span>GST Compliance<span class="nav-badge nb-r">74.8%</span></div>
+    <div class="nav" onclick="showTab('pcom',this)"><span class="nav-ico">📑</span>PCOM Pending</div>
+  </div>
+  <div class="sb-sec">
+    <div class="sb-lbl">Growth & Analytics</div>
+    <div class="nav" onclick="showTab('onboard',this)"><span class="nav-ico">🚀</span>Onboarding Tracker<span class="nav-badge nb-g">New</span></div>
+    <div class="nav" onclick="showTab('monthly',this)"><span class="nav-ico">📈</span>Monthly Analysis</div>
+    <div class="nav" onclick="showTab('defaulter',this)"><span class="nav-ico">⚠️</span>Defaulter Watch<span class="nav-badge nb-r">7</span></div>
+    <div class="nav" onclick="showTab('asp',this)"><span class="nav-ico">🏪</span>ASP / Vendor View</div>
+  </div>
+  <div class="sb-footer">
+    <div style="display:flex;align-items:center;gap:8px;padding:7px 9px;background:#F8FAFC;border-radius:8px;">
+      <div style="width:7px;height:7px;background:var(--green);border-radius:50%;"></div>
+      <div style="font-size:10.5px;color:var(--text2);">6 RMs active · 09:45 AM</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── MAIN ── -->
+<div class="main" id="mainArea">
+
+<!-- ── TAB BAR ── -->
+
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- PAGE: OVERVIEW -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="page-overview" class="page on">
+
+  <div class="pg-hdr">
+    <div><div class="pg-title">Strategic Overview</div><div class="pg-sub"></div></div>
+    <div class="pg-ctrls">
+      <button class="btn" onclick="window.print()">🖨 Print</button>  
+      
+    </div>
+  </div>
+
+
+  <!-- KPI Strip -->
+  <div class="kpi-row">
+    <div class="kpi bl" onclick="showTab('cb')">
+      <div class="kpi-lbl">CB Due Today</div>
+      <div class="kpi-val">26</div>
+      <div class="kpi-d dn">498.90K</div>
+      <div class="sparkline">
+        <div class="spk" style="height:40%;background:#BFDBFE;"></div><div class="spk" style="height:55%;background:#93C5FD;"></div><div class="spk" style="height:50%;background:#60A5FA;"></div><div class="spk" style="height:70%;background:#3B82F6;"></div><div class="spk" style="height:65%;background:#2563EB;"></div><div class="spk" style="height:80%;background:#1D4ED8;"></div><div class="spk" style="height:100%;background:#1E40AF;"></div>
+      </div>
+    </div>
+    <div class="kpi bl" onclick="showTab('cb')">
+      <div class="kpi-lbl">CB Due Tomorrow</div>
+      <div class="kpi-val">35</div>
+      <div class="kpi-d dn">280.3M</div>
+      <div class="sparkline">
+        <div class="spk" style="height:40%;background:#BFDBFE;"></div><div class="spk" style="height:55%;background:#93C5FD;"></div><div class="spk" style="height:50%;background:#60A5FA;"></div><div class="spk" style="height:70%;background:#3B82F6;"></div><div class="spk" style="height:65%;background:#2563EB;"></div><div class="spk" style="height:80%;background:#1D4ED8;"></div><div class="spk" style="height:100%;background:#1E40AF;"></div>
+      </div>
+    </div>
+    <div class="kpi bl" onclick="showTab('tcc')">
+      <div class="kpi-lbl">TCC/RET | Banks</div>
+      <div class="kpi-val">26</div>
+      <div class="kpi-d">280 Txns</div>
+      <div class="sparkline">
+        <div class="spk" style="height:40%;background:#BFDBFE;"></div><div class="spk" style="height:55%;background:#93C5FD;"></div><div class="spk" style="height:50%;background:#60A5FA;"></div><div class="spk" style="height:70%;background:#3B82F6;"></div><div class="spk" style="height:65%;background:#2563EB;"></div><div class="spk" style="height:80%;background:#1D4ED8;"></div><div class="spk" style="height:100%;background:#1E40AF;"></div>
+      </div>
+    </div>
+    <div class="kpi gr" onclick="showTab('rrc')">
+      <div class="kpi-lbl">RRC</div>
+      <div class="kpi-val">28</div>
+      <div class="kpi-d dn"> 2050 transactions</div>
+      <div class="sparkline">
+        <div class="spk" style="height:90%;background:#A7F3D0;"></div><div class="spk" style="height:88%;background:#6EE7B7;"></div><div class="spk" style="height:87%;background:#34D399;"></div><div class="spk" style="height:86%;background:#10B981;"></div><div class="spk" style="height:87%;background:#059669;"></div><div class="spk" style="height:85%;background:#047857;"></div><div class="spk" style="height:86%;background:#065F46;"></div>
+      </div>
+    </div>
+    <div class="kpi rd" onclick="showTab('drc')">
+      <div class="kpi-lbl">DRC</div>
+      <div class="kpi-val">34</div>
+      <div class="kpi-d dn">1080 transactions</div>
+      <div class="sparkline">
+        <div class="spk" style="height:30%;background:#FECACA;"></div><div class="spk" style="height:45%;background:#FCA5A5;"></div><div class="spk" style="height:35%;background:#F87171;"></div><div class="spk" style="height:50%;background:#EF4444;"></div><div class="spk" style="height:42%;background:#DC2626;"></div><div class="spk" style="height:55%;background:#B91C1C;"></div><div class="spk" style="height:60%;background:#991B1B;"></div>
+      </div>
+    </div>
+    <div class="kpi am" onclick="showTab('pcom')">
+      <div class="kpi-lbl">PCOM</div>
+      <div class="kpi-val">1170</div>
+      <div class="kpi-d dn">27 peniding banks</div>
+      <div class="sparkline">
+        <div class="spk" style="height:50%;background:#FDE68A;"></div><div class="spk" style="height:60%;background:#FCD34D;"></div><div class="spk" style="height:55%;background:#FBBF24;"></div><div class="spk" style="height:70%;background:#F59E0B;"></div><div class="spk" style="height:65%;background:#D97706;"></div><div class="spk" style="height:75%;background:#B45309;"></div><div class="spk" style="height:80%;background:#92400E;"></div>
+      </div>
+    </div>
+    <div class="kpi pu" onclick="showTab('crm')">
+      <div class="kpi-lbl">CRM Open Tickets</div>
+      <div class="kpi-val">13</div>
+      <div class="kpi-d neu">Today Due - 2</div>
+      <div class="sparkline">
+        <div class="spk" style="height:60%;background:#DDD6FE;"></div><div class="spk" style="height:80%;background:#C4B5FD;"></div><div class="spk" style="height:70%;background:#A78BFA;"></div><div class="spk" style="height:90%;background:#8B5CF6;"></div><div class="spk" style="height:75%;background:#7C3AED;"></div><div class="spk" style="height:85%;background:#6D28D9;"></div><div class="spk" style="height:95%;background:#5B21B6;"></div>
+      </div>
+    </div>
+    <div class="kpi te" onclick="showTab('gst')">
+      <div class="kpi-lbl">GST Pending %</div>
+      <div class="kpi-val">74.8%</div>
+      <div class="kpi-d dn">42 banks pending</div>
+      <div class="sparkline">
+        <div class="spk" style="height:60%;background:#BAE6FD;"></div><div class="spk" style="height:70%;background:#7DD3FC;"></div><div class="spk" style="height:75%;background:#38BDF8;"></div><div class="spk" style="height:80%;background:#0EA5E9;"></div><div class="spk" style="height:72%;background:#0284C7;"></div><div class="spk" style="height:78%;background:#0369A1;"></div><div class="spk" style="height:75%;background:#075985;"></div>
+      </div>
+    </div>
+    <div class="kpi te" onclick="showTab('cb')">
+      <div class="kpi-lbl">Deemed %</div>
+      <div class="kpi-val">7.8%</div>
+      <div class="kpi-d dn">9 Deemed Volume </div>
+      <div class="sparkline">
+        <div class="spk" style="height:60%;background:#BAE6FD;"></div><div class="spk" style="height:70%;background:#7DD3FC;"></div><div class="spk" style="height:75%;background:#38BDF8;"></div><div class="spk" style="height:80%;background:#0EA5E9;"></div><div class="spk" style="height:72%;background:#0284C7;"></div><div class="spk" style="height:78%;background:#0369A1;"></div><div class="spk" style="height:75%;background:#075985;"></div>
+      </div>
+    </div>
+    <div class="kpi te" onclick="showTab('tdbd')">
+      <div class="kpi-lbl">Zero Approved % Banks</div>
+      <div class="kpi-val">14</div>
+      <div class="kpi-d dn"></div>
+      <div class="sparkline">
+        <div class="spk" style="height:60%;background:#BAE6FD;"></div><div class="spk" style="height:70%;background:#7DD3FC;"></div><div class="spk" style="height:75%;background:#38BDF8;"></div><div class="spk" style="height:80%;background:#0EA5E9;"></div><div class="spk" style="height:72%;background:#0284C7;"></div><div class="spk" style="height:78%;background:#0369A1;"></div><div class="spk" style="height:75%;background:#075985;"></div>
+      </div>
+    </div>
+    <div class="kpi te" onclick="showTab('tdbd')">
+      <div class="kpi-lbl">TD>2% Banks</div>
+      <div class="kpi-val">74</div>
+      <div class="kpi-d dn"></div>
+      <div class="sparkline">
+        <div class="spk" style="height:60%;background:#BAE6FD;"></div><div class="spk" style="height:70%;background:#7DD3FC;"></div><div class="spk" style="height:75%;background:#38BDF8;"></div><div class="spk" style="height:80%;background:#0EA5E9;"></div><div class="spk" style="height:72%;background:#0284C7;"></div><div class="spk" style="height:78%;background:#0369A1;"></div><div class="spk" style="height:75%;background:#075985;"></div>
+      </div>
+    </div>
+    <div class="kpi te" onclick="showTab('tdbd')">
+      <div class="kpi-lbl">BD BI >5% Banks      </div>
+      <div class="kpi-val">17</div>
+      <div class="kpi-d dn"></div>
+      <div class="sparkline">
+        <div class="spk" style="height:60%;background:#BAE6FD;"></div><div class="spk" style="height:70%;background:#7DD3FC;"></div><div class="spk" style="height:75%;background:#38BDF8;"></div><div class="spk" style="height:80%;background:#0EA5E9;"></div><div class="spk" style="height:72%;background:#0284C7;"></div><div class="spk" style="height:78%;background:#0369A1;"></div><div class="spk" style="height:75%;background:#075985;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Product Volume + RM Heatmap -->
+  <div class="g2">
+    <div class="panel">
+      <div class="ph"><div class="ph-ico" style="background:#EFF6FF;">📦</div><div class="ph-title">Product wise Volume Performance</div><div class="ph-r"><button class="btn" style="padding:3px 8px;font-size:10px;" onclick="showTab('tdbd')">Drill ↗</button></div></div>
+      <table class="tbl">
+        <thead><tr><th>Product</th><th class="r">Total Vol</th><th class="r">Approved</th><th class="r">Appr %</th><th class="r">BD %</th><th class="r">TD %</th><th class="r">Status</th></tr></thead>
+       <tbody>
+  <tr><td class="drillable" onclick="drillproduct('AEPS')"><b>AEPS</b></td><td class="r mono">2.47M</td><td class="r mono">1.52M</td><td class="r"><span class="hc h2">61.28%</span></td><td class="r"><span class="hc h3">10.55%</span></td><td class="r"><span class="hc h3">13.36%</span></td><td class="r"><span class="bdg r"><span class="bdot"></span>Alert</span></td></tr>
+  <tr><td class="drillable" onclick="drillproduct('IMPS')"><b>IMPS</b></td><td class="r mono">852K</td><td class="r mono">719K</td><td class="r"><span class="hc h1">84.35%</span></td><td class="r"><span class="hc h0">0.64%</span></td><td class="r"><span class="hc h2">11.66%</span></td><td class="r"><span class="bdg a"><span class="bdot"></span>Watch</span></td></tr>
+  <tr><td class="drillable" onclick="drillproduct('NFS')"><b>NFS</b></td><td class="r mono">937K</td><td class="r mono">749K</td><td class="r"><span class="hc h1">79.95%</span></td><td class="r"><span class="hc h0">1.54%</span></td><td class="r"><span class="hc h0">1.86%</span></td><td class="r"><span class="bdg a"><span class="bdot"></span>Watch</span></td></tr>
+  <tr><td class="drillable" onclick="drillproduct('RUPAY')"><b>RUPAY</b></td><td class="r mono">118K</td><td class="r mono">101K</td><td class="r"><span class="hc h0">85.80%</span></td><td class="r"><span class="hc h0">1.99%</span></td><td class="r"><span class="hc h0">2.20%</span></td><td class="r"><span class="bdg g"><span class="bdot"></span>Good</span></td></tr>
+  <tr><td class="drillable" onclick="drillproduct('UPI')"><b>UPI</b></td><td class="r mono">14.8M</td><td class="r mono">13.5M</td><td class="r"><span class="hc h0">91.24%</span></td><td class="r"><span class="hc h0">0.39%</span></td><td class="r"><span class="hc h0">0.87%</span></td><td class="r"><span class="bdg g"><span class="bdot"></span>Good</span></td></tr>
+  <tr class="tot"><td><b>Total</b></td><td class="r mono">19.2M</td><td class="r mono">16.6M</td><td class="r"><span class="hc h1">86.49%</span></td><td class="r"><span class="hc h1">1.78%</span></td><td class="r"><span class="hc h2">3.01%</span></td><td class="r"></td></tr>
+</tbody>
+      </table>
+    </div>
+    <div class="panel">
+      <div class="ph"><div class="ph-ico" style="background:#FFF7ED;">👤</div><div class="ph-title">RM wise Bank Count — Approval Health</div><div class="ph-r"><span class="bdg r"></span></div></div>
+      <table class="tbl">
+        <thead><tr><th>RM Name</th><th class="r">Appr&lt;80%</th><th class="r">BD&gt;5%</th><th class="r">TD&gt;2%</th><th class="r" style="color:var(--red)">Appr=0%</th><th class="r">Action</th></tr></thead>
+       <tbody>
+  <tr><td class="bname drillable" onclick="drillRM('Ameya Save')">Ameya Save</td><td class="r">256</td><td class="r">108</td><td class="r">175</td><td class="r"><span class="hc h2">15</span></td><td class="r"><span class="bdg a">Review</span></td></tr>
+  <tr class="crit"><td class="bname drillable" onclick="drillRM('Deepak Panday')">Deepak Panday</td><td class="r">206</td><td class="r">62</td><td class="r">153</td><td class="r"><span class="hc h3">23</span></td><td class="r"><span class="bdg r">Alert</span></td></tr>
+  <tr><td class="bname drillable" onclick="drillRM('Divya Daiya')">Divya Daiya</td><td class="r">2</td><td class="r">0</td><td class="r">7</td><td class="r"><span class="hc h0">1</span></td><td class="r"><span class="bdg g">OK</span></td></tr>
+  <tr><td class="bname drillable" onclick="drillRM('Himanshu Lal')">Himanshu Lal</td><td class="r">44</td><td class="r">12</td><td class="r">26</td><td class="r"><span class="hc h0">1</span></td><td class="r"><span class="bdg g">OK</span></td></tr>
+  <tr><td class="bname drillable" onclick="drillRM('Mayur More')">Mayur More</td><td class="r">153</td><td class="r">50</td><td class="r">99</td><td class="r"><span class="hc h2">19</span></td><td class="r"><span class="bdg a">Review</span></td></tr>
+  <tr><td class="bname drillable" onclick="drillRM('Pratik Lohakane')">Pratik Lohakane</td><td class="r">108</td><td class="r">52</td><td class="r">68</td><td class="r"><span class="hc h2">15</span></td><td class="r"><span class="bdg a">Review</span></td></tr>
+  <tr class="tot"><td><b>Total</b></td><td class="r">769</td><td class="r">284</td><td class="r">528</td><td class="r"><span class="hc h3">74</span></td><td class="r"></td></tr>
+</tbody>
+      </table>
+    </div>
+  </div>
+  
+  <!-- CB Due + Deemed -->
+  <div class="g31">
+    
+    <div class="panel">
+      <div class="ph"><div class="ph-ico" style="background:#F5F3FF;">📌</div><div class="ph-title">Deemed FTD</div></div>
+      <div class="pb">
+        <div class="prow"><div class="plbl">IMPS</div><div class="ptrack"><div class="pfill" style="width:0%;background:var(--green);"></div></div><div class="pval" style="color:var(--green);">0.00%</div></div>
+        <div class="prow"><div class="plbl">NFS</div><div class="ptrack"><div class="pfill" style="width:0%;background:var(--green);"></div></div><div class="pval" style="color:var(--green);">0.00%</div></div>
+        <div class="prow"><div class="plbl">UPI</div><div class="ptrack"><div class="pfill" style="width:77%;background:var(--amber);"></div></div><div class="pval" style="color:var(--amber);">1.55%</div></div>
+        <div style="margin-top:10px;background:#FFF5F5;border:1px solid #FECACA;border-radius:7px;padding:8px 10px;">
+          <div style="font-size:11px;font-weight:600;color:#991B1B;">⚠ FTD Deemed: 12 txns · ₹1,48,549</div>
+          <div style="font-size:10px;color:#B91C1C;margin-top:2px;">Ameya Save: 7 · Mayur More: 3 · Pratik: 2</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Defaulter + Strategic Insights -->
+  <div class="g2">
+    <div class="panel">
+      <div class="ph"><div class="ph-ico" style="background:#FEF2F2;">🚨</div><div class="ph-title">Defaulter Watch</div><div class="ph-r"><button class="btn" style="padding:3px 8px;font-size:10px;" onclick="showTab('defaulter')">Full List ↗</button></div></div>
+      <table class="tbl">
+        <thead><tr><th>Bank / Issue</th><th>Code</th><th>Product</th><th>RM</th><th>Type</th><th class="r">Months</th></tr></thead>
+        <tbody>
+          <tr class="crit"><td class="bname" style="font-size:10.5px;">BOMBAY MERCANTILE CO OP</td><td><span class="ctag">BMC</span></td><td>IMPS</td><td style="font-size:10px;">Deepak P.</td><td><span class="bdg r">3M Deemed</span></td><td class="r"><span class="hc h4">3+</span></td></tr>
+          <tr class="crit"><td class="bname" style="font-size:10.5px;">BHAVNAGAR DISTRICT CO OP</td><td><span class="ctag">BVN</span></td><td>IMPS</td><td style="font-size:10px;">Mayur More</td><td><span class="bdg r">3M Deemed</span></td><td class="r"><span class="hc h4">3+</span></td></tr>
+          <tr class="crit"><td class="bname" style="font-size:10.5px;">NFS — 28 banks zero approval</td><td>—</td><td>NFS</td><td style="font-size:10px;">Multiple</td><td><span class="bdg r">Zero Appr.</span></td><td class="r">—</td></tr>
+          <tr class="warn"><td class="bname" style="font-size:10.5px;">AEPS — 13 banks zero approval</td><td>—</td><td>AEPS</td><td style="font-size:10px;">Multiple</td><td><span class="bdg a">Zero Appr.</span></td><td class="r">—</td></tr>
+          <tr class="warn"><td class="bname" style="font-size:10.5px;">AEPS High BD: 10.55%</td><td>—</td><td>AEPS</td><td style="font-size:10px;">All RMs</td><td><span class="bdg a">High BD</span></td><td class="r">—</td></tr>
+          <tr class="warn"><td class="bname" style="font-size:10.5px;">AEPS High TD: 13.36%</td><td>—</td><td>AEPS</td><td style="font-size:10px;">All RMs</td><td><span class="bdg a">High TD</span></td><td class="r">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="panel">
+      <div class="ph"><div class="ph-ico" style="background:#F0FDF4;">💡</div><div class="ph-title">Strategic Insights & Actions</div></div>
+      <div class="pb" style="display:flex;flex-direction:column;gap:7px;">
+        <div class="icard r"><div class="ititle">🔴 Critical: AEPS Approval at 61.28% — Far Below 90% Target</div><div class="itext">Deepak Panday leads zero-approval count at 23 banks. NFS has 28 zero-approval banks. Immediate escalation required — risk of NPCI penalty if unresolved within 7 days.</div></div>
+        <div class="icard a"><div class="ititle">🟡 GST Compliance at 74.8% — Feb 2026 (Pratik: 100% pending)</div><div class="itext">Commercial banks at 91.3% — highest-risk segment. 911 NACH banks pending. Target: bring below 60% by month-end. Prioritise Pratik Lohakane portfolio immediately.</div></div>
+        <div class="icard a"><div class="ititle">🟡 TCC/RET: 30 IMPS banks aged 31–60 days overdue</div><div class="itext">Ameya Save (10) and Pratik Lohakane (8) have oldest returns. BVN, AGB, BEA need same-day resolution. Each additional day increases reversal risk.</div></div>
+        <div class="icard g"><div class="ititle">🟢 UPI at 91.24% — Scale Eligible for P2P Upgrade</div><div class="itext">14.8M volume base performing above threshold. Identify top-10 banks for transaction limit expansion. Onboarding 178 PCOM-pending banks could add ~890K monthly volume.</div></div>
+        <div class="icard b"><div class="ititle">📋 Pipeline: 178 PCOM Banks Pending — Activate for Growth</div><div class="itext">Ameya: 57, Deepak: 50, Mayur: 39. Fast-track ARSN, ANSP, ASBL (Q1 FY24-25). Each activated bank adds avg 5K txn/month to portfolio.</div></div>
+      </div>
+    </div>
+  </div>
+
+
+  
+
+  <div class="footer">
+    <div style="font-size:10px;color:var(--text3);">NPCI Dashboad· CCU Team · Last sync: 09:45 AM 14 Mar 2026</div>
+  </div>
+</div>
+
+
+
+<script>
+
+function drillRM(rmName) {
+  window.selectedRM = rmName;
+
+  // inject RM context into bank page header
+  const bankSub = document.querySelector('#page-bankmaster .pg-sub');
+  if (bankSub) bankSub.textContent = 'Drilled from overview  ·  RM: ' + rmName;
+
+  // update panel title too (optional)
+  const panelTitle = document.querySelector('#page-bankmaster .ph-title');
+  if (panelTitle) panelTitle.textContent = 'Bank wise TD/BD Data — RM: ' + rmName;
+
+  // navigate to bank page
+  showTab('bankmaster');
+}
+
+function drillproduct(productName) {
+  window.selectedProduct = productName;
+
+  const bankTitle = document.querySelector('#page-bank .pg-title');
+  const bankSub   = document.querySelector('#page-bank .pg-sub');
+  if (bankTitle) bankTitle.textContent = 'Bank Wise — ' + productName;
+  if (bankSub)   bankSub.textContent   = 'Product: ' + productName;
+
+  showTab('bankmaster');
+}
+</script>
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- PAGE: Business -->
+<!-- ═══════════════════════════════════════════════════════ -->
+
+<div id="page-business" class="page">
+  <div class="pg-hdr"><div><div class="pg-title">Business Report</div><div class="pg-sub"></div></div><div class="pg-ctrls"><select class="btn"><option>All Products</option><option>UPI</option><option>IMPS</option><option>NFS</option><option>AEPS</option></select><button class="btn">⬇ Export</button></div></div>
+  <div class="kpi-row">
+    <div class="kpi bl"><div class="kpi-lbl">UPI Users</div><div class="kpi-val">19.2M</div><div class="kpi-d up">▲ 188976 MTD</div></div>
+    <div class="kpi bl"><div class="kpi-lbl">RUPAY Active Cards</div><div class="kpi-val">106.6M</div><div class="kpi-d up">▲ 28976 MTD</div></div>
+    <div class="kpi bl"><div class="kpi-lbl">IMPS Users</div><div class="kpi-val">19.2M</div><div class="kpi-d up">▲ 188976 MTD</div></div>
+    <div class="kpi bl"><div class="kpi-lbl">NFS Users</div><div class="kpi-val">19.2M</div><div class="kpi-d up">▲ 188976 MTD</div></div>
+    <div class="kpi bl"><div class="kpi-lbl">AEPS Users</div><div class="kpi-val">19.2M</div><div class="kpi-d up">▲ 188976 MTD</div></div>
+
+  </div>
+   
+  <div class="kpi-row">
+    <div class="kpi bl"><div class="kpi-lbl">UPI Live Banks</div><div class="kpi-val">1290</div><div class="kpi-d up">▲ 4 Last Month</div></div>
+    <div class="kpi gr"><div class="kpi-lbl">AEPS Live Banks</div><div class="kpi-val">116</div><div class="kpi-d up">▲ 0 Last Month</div></div>
+    <div class="kpi gr"><div class="kpi-lbl">IMPS Live Banks</div><div class="kpi-val">1289</div><div class="kpi-d up">▲ 6 Last Month</div></div>
+    <div class="kpi gr"><div class="kpi-lbl">RUPAY Live Banks</div><div class="kpi-val">1600</div><div class="kpi-d up">▲ 2 Last Month</div></div>
+    <div class="kpi gr"><div class="kpi-lbl">NFS Live Banks</div><div class="kpi-val">1425</div><div class="kpi-d up">▲ 1 Last Month</div></div>
+    <div class="kpi gr"><div class="kpi-lbl">NACH Live Banks</div><div class="kpi-val">1656</div><div class="kpi-d up">▲ 2 Last Month</div></div>
+
+  </div>
+   <div class="panel">
+      <div class="ph"><div class="ph-ico" style="background:#EFF6FF;">📊</div><div class="ph-title">Product & RM wise Onboarded Banks</div></div>
+      <table class="tbl">
+        <thead><tr><th>Product</th><th class="r">Ameya Save</th><th class="r">Deepak Pandey</th><th class="r">Divya Daiya</th><th class="r">Pratik Lohakane</th></tr></thead>
+        <tbody>
+          <tr><td><b>AEPS</b></td><td class="r mono">86</td><td class="r mono">151</td><td class="r"><span class="r">67</span></td><td class="r mono">26</td></tr>
+          <tr><td><b>IMPS</b></td><td class="r mono">85</td><td class="r mono">71</td><td class="r"><span class="r">84</span></td><td class="r mono">5</td></tr>
+          <tr><td><b>NFS</b></td><td class="r mono">93</td><td class="r mono">74</td><td class="r"><span class="r">77</span></td><td class="r mono">14</td></tr>
+          <tr><td><b>RUPAY</b></td><td class="r mono">11</td><td class="r mono">1</td><td class="r"><span class="r">85</span></td><td class="r mono">2</td></tr>
+          <tr><td><b>UPI</b></td><td class="r mono">14</td><td class="r mono">13</td><td class="r"><span class="r">9</span></td><td class="r mono">57</td></tr>
+          <tr class="tot"><td><b>Total</b></td><td class="r mono">150</td><td class="r mono">168</td><td class="r"><span class="r">860</span></td><td class="r mono">341</td></tr>
+        </tbody>
+      </table>
+  </div>
+<div class="panel">
+      <div class="ph"><div class="ph-ico" style="background:#EFF6FF;">📊</div><div class="ph-title">Product wise Business</div></div>
+      <table class="tbl">
+        <thead><tr><th>Product</th><th class="r">Volume(YTD)</th><th class="r">Value(YTD)</th><th class="r">Volume(Last Month)</th><th class="r">Value(Last Month)</th></tr></thead>
+        <tbody>
+          <tr><td><b>AEPS</b></td><td class="r mono">2,473,892</td><td class="r mono">1,516,072</td><td class="r"><span class="r">612456</span></td><td class="r mono">261,089</td></tr>
+          <tr><td><b>IMPS</b></td><td class="r mono">852,567</td><td class="r mono">719,133</td><td class="r"><span class="r">84900</span></td><td class="r mono">5,472</td></tr>
+          <tr><td><b>NFS</b></td><td class="r mono">936,975</td><td class="r mono">749,069</td><td class="r"><span class="r">7900090</span></td><td class="r mono">14,441</td></tr>
+          <tr><td><b>RUPAY</b></td><td class="r mono">118,086</td><td class="r mono">101,319</td><td class="r"><span class="r">85</span></td><td class="r mono">2,352</td></tr>
+          <tr><td><b>UPI</b></td><td class="r mono">14,825,076</td><td class="r mono">13,525,925</td><td class="r"><span class="r">915000</span></td><td class="r mono">57,998</td></tr>
+          <tr class="tot"><td><b>Total</b></td><td class="r mono">19,206,596</td><td class="r mono">16,611,518</td><td class="r"><span class="r">8680900</span></td><td class="r mono">341,352</td></tr>
+        </tbody>
+      </table>
+  </div>
+ 
+  
+
+  <div class="panel">
+      <div class="ph"><div class="ph-ico" style="background:#F0FDF4;">📊</div><div class="ph-title">Monthly Volume Analysis</div></div>
+      <table class="tbl">
+        <thead><tr><th>Month</th><th>Product</th><th class="r">Approved Volume</th><th class="r">Approved Value</th><th class="r">MoM Δ</th></tr></thead>
+        <tbody>
+          <tr><td>April 2026</td><td>UPI</td><td class="r mono">4.1M</td><td class="r mono">4.3M</td><td class="r" style="color:var(--green);">+4.7%</td></tr>
+          <tr><td>May 2026</td><td>UPI</td><td class="r mono">3.8M</td><td class="r mono">3.6M</td><td class="r" style="color:var(--green);">+2.8%</td></tr>
+          <tr><td>June 2026</td><td>UPI</td><td class="r mono">2.1M</td><td class="r mono">2.0M</td><td class="r" style="color:var(--green);">+10%</td></tr>
+          <tr><td>July 2026</td><td>UPI</td><td class="r mono">3.5M</td><td class="r mono">3.4M</td><td class="r" style="color:var(--green);">+2.9%</td></tr>
+          <tr><td>August 2026</td><td>UPI</td><td class="r mono">2.8M</td><td class="r mono">2.7M</td><td class="r" style="color:var(--green);">+7.4%</td></tr>
+          <tr><td>Septembet 2026</td><td>UPI</td><td class="r mono">0.3M</td><td class="r mono">0.4M</td><td class="r" style="color:var(--green);">+0%</td></tr>
+          <tr><td>Octomber 2026</td><td>UPI</td><td class="r mono">0.3M</td><td class="r mono">0.4M</td><td class="r" style="color:var(--green);">+0%</td></tr>
+          <tr><td>November 2026</td><td>UPI</td><td class="r mono">0.3M</td><td class="r mono">0.4M</td><td class="r" style="color:var(--green);">+0%</td></tr>
+          <tr><td>December 2026</td><td>UPI</td><td class="r mono">0.3M</td><td class="r mono">0.4M</td><td class="r" style="color:var(--green);">+0%</td></tr>
+          <tr><td>January 2027</td><td>UPI</td><td class="r mono">0.3M</td><td class="r mono">0.4M</td><td class="r" style="color:var(--green);">+0%</td></tr>
+          <tr class="tot"><td><b>Total</b></td><td></td><td class="r mono">16.6M</td><td class="r mono">16.4M</td><td class="r" style="color:var(--green);"><b>+3.2%</b></td></tr>
+        </tbody>
+      </table>
+  </div>
+
+  <div class="footer"><div style="font-size:10px;color:var(--text3);">NPCI Dashboad· CCU Team · Last sync: 09:45 AM 14 Mar 2026</div></div>
+</div>
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- PAGE: TD/BD -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="page-tdbd" class="page">
+  <div class="pg-hdr"><div><div class="pg-title">TD / BD Performance</div><div class="pg-sub"></div></div><div class="pg-ctrls"><select class="btn"><option>All Products</option><option>UPI</option><option>IMPS</option><option>NFS</option><option>AEPS</option></select><button class="btn">⬇ Export</button></div></div>
+  
+  <div class="g2">
+    
+  </div>
+    <div class="panel">
+      <div class="ph"><div class="ph-ico" style="background:#EFF6FF;">📊</div><div class="ph-title">Product wise Volume — Detailed</div></div>
+      <table class="tbl">
+        <thead><tr><th>Product</th><th class="r">Total Vol</th><th class="r">Appr Vol</th><th class="r">Appr %</th><th class="r">BD BI Vol</th><th class="r">BD BI %</th><th class="r">BD CI Vol</th><th class="r">BD CI %</th><th class="r">TD Vol</th><th class="r">TD %</th><th class="r">TD(SOP)</th><th class="r">TD(SOP) %</th></tr></thead>
+        <tbody>
+          <tr><td class="drillable" onclick="drillproduct_tdbd('AEPS')"><b>AEPS</b></td><td class="r mono">2,473,892</td><td class="r mono">1,516,072</td><td class="r"><span class="hc h2">61.28%</span></td><td class="r mono">261,089</td><td class="r"><span class="hc h3">10.55%</span></td><td class="r mono">95,179</td><td class="r">3.85%</td><td class="r mono">330,510</td><td class="r"><span class="hc h3">13.36%</span></td><td class="r mono">330,510</td><td class="r"><span class="hc h3">13.36%</span></td></tr>
+          <tr><td class="drillable" onclick="drillproduct_tdbd('IMPS')"><b>IMPS</b></td><td class="r mono">852,567</td><td class="r mono">719,133</td><td class="r"><span class="hc h1">84.35%</span></td><td class="r mono">5,472</td><td class="r"><span class="hc h0">0.64%</span></td><td class="r mono">26,067</td><td class="r">3.06%</td><td class="r mono">99,423</td><td class="r"><span class="hc h2">11.66%</span></td><td class="r mono">330,510</td><td class="r"><span class="hc h3">13.36%</span></td></tr>
+          <tr><td class="drillable" onclick="drillproduct_tdbd('NFS')"><b>NFS</b></td><td class="r mono">936,975</td><td class="r mono">749,069</td><td class="r"><span class="hc h1">79.95%</span></td><td class="r mono">14,441</td><td class="r"><span class="hc h0">1.54%</span></td><td class="r mono">121,088</td><td class="r">12.92%</td><td class="r mono">17,460</td><td class="r"><span class="hc h0">1.86%</span></td><td class="r mono">330,510</td><td class="r"><span class="hc h3">13.36%</span></td></tr>
+          <tr><td class="drillable" onclick="drillproduct_tdbd('RUPAY')"><b>RUPAY</b></td><td class="r mono">118,086</td><td class="r mono">101,319</td><td class="r"><span class="hc h0">85.80%</span></td><td class="r mono">2,352</td><td class="r"><span class="hc h0">1.99%</span></td><td class="r mono">11,777</td><td class="r">9.97%</td><td class="r mono">2,593</td><td class="r"><span class="hc h0">2.20%</span></td><td class="r mono">330,510</td><td class="r"><span class="hc h3">13.36%</span></td></tr>
+          <tr><td class="drillable" onclick="drillproduct_tdbd('UPI')"><b>UPI</b></td><td class="r mono">14,825,076</td><td class="r mono">13,525,925</td><td class="r"><span class="hc h0">91.24%</span></td><td class="r mono">57,998</td><td class="r"><span class="hc h0">0.39%</span></td><td class="r mono">15,066</td><td class="r">0.10%</td><td class="r mono">128,739</td><td class="r"><span class="hc h0">0.87%</span></td><td class="r mono">330,510</td><td class="r"><span class="hc h3">13.36%</span></td></tr>
+          <tr class="tot"><td><b>Total</b></td><td class="r mono">19,206,596</td><td class="r mono">16,611,518</td><td class="r"><span class="hc h1">86.49%</span></td><td class="r mono">341,352</td><td class="r"><span class="hc h1">1.78%</span></td><td class="r mono">269,177</td><td class="r">1.40%</td><td class="r mono">578,725</td><td class="r"><span class="hc h2">3.01%</span></td><td class="r mono">330,510</td><td class="r"><span class="hc h3">13.36%</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="panel">
+      <div class="ph"><div class="ph-ico" style="background:#FFF7ED;">👤</div><div class="ph-title">RM wise Bank Count — All Products</div></div>
+      <table class="tbl">
+        <thead><tr><th>RM / Product</th><th class="r">Appr&lt;80%</th><th class="r">BD&gt;5%</th><th class="r">TD&gt;2%</th><th class="r" style="color:var(--red);">Appr=0%</th></tr></thead>
+        <tbody>
+          <tr style="background:#FAFAFA;"><td colspan="5" style="font-size:10px;font-weight:700;color:var(--text3);padding:6px 9px;">AEPS</td></tr>
+          <tr><td>Ameya Save</td><td class="r">42</td><td class="r">35</td><td class="r">12</td><td class="r"><span class="hc h1">3</span></td></tr>
+          <tr class="crit"><td>Deepak Panday</td><td class="r">8</td><td class="r">0</td><td class="r">2</td><td class="r"><span class="hc h3">5</span></td></tr>
+          <tr><td>Mayur More</td><td class="r">9</td><td class="r">3</td><td class="r">2</td><td class="r"><span class="hc h2">4</span></td></tr>
+          <tr style="background:#FAFAFA;"><td colspan="5" style="font-size:10px;font-weight:700;color:var(--text3);padding:6px 9px;">NFS</td></tr>
+          <tr><td>Ameya Save</td><td class="r">137</td><td class="r">29</td><td class="r">79</td><td class="r"><span class="hc h1">6</span></td></tr>
+          <tr class="crit"><td>Deepak Panday</td><td class="r">122</td><td class="r">28</td><td class="r">89</td><td class="r"><span class="hc h4">11</span></td></tr>
+          <tr><td>Mayur More</td><td class="r">87</td><td class="r">13</td><td class="r">53</td><td class="r"><span class="hc h2">8</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="panel">
+      <div class="ph"><div class="ph-ico" style="background:#EFF6FF;">📊</div><div class="ph-title">Bank wise Volume — Detailed</div></div>
+      <table class="tbl">
+        <thead><tr><th>Bank Name</th><th class="r">Total Vol</th><th class="r">Appr Vol</th><th class="r">Appr %</th><th class="r">BD BI Vol</th><th class="r">BD BI %</th><th class="r">BD CI Vol</th><th class="r">BD CI %</th><th class="r">TD Vol</th><th class="r">TD %</th></tr></thead>
+        <tbody>
+          <tr><td><b>CHHATTISGARH RAJYA GRAMIN BANK</b></td><td class="r mono">2,473,892</td><td class="r mono">1,516,072</td><td class="r"><span class="hc h2">61.28%</span></td><td class="r mono">261,089</td><td class="r"><span class="hc h3">10.55%</span></td><td class="r mono">95,179</td><td class="r">3.85%</td><td class="r mono">330,510</td><td class="r"><span class="hc h3">13.36%</span></td></tr>
+          <tr><td><b>VASAVI MSCM CO OP BANK LTD</b></td><td class="r mono">852,567</td><td class="r mono">719,133</td><td class="r"><span class="hc h1">84.35%</span></td><td class="r mono">5,472</td><td class="r"><span class="hc h0">0.64%</span></td><td class="r mono">26,067</td><td class="r">3.06%</td><td class="r mono">99,423</td><td class="r"><span class="hc h2">11.66%</span></td></tr>
+          <tr><td><b>BHARUCH DISTRICT CENTRAL CO OP</b></td><td class="r mono">936,975</td><td class="r mono">749,069</td><td class="r"><span class="hc h1">79.95%</span></td><td class="r mono">14,441</td><td class="r"><span class="hc h0">1.54%</span></td><td class="r mono">121,088</td><td class="r">12.92%</td><td class="r mono">17,460</td><td class="r"><span class="hc h0">1.86%</span></td></tr>
+          <tr><td><b>BHARUCH DISTRICT CENTRAL CO OP</b></td><td class="r mono">118,086</td><td class="r mono">101,319</td><td class="r"><span class="hc h0">85.80%</span></td><td class="r mono">2,352</td><td class="r"><span class="hc h0">1.99%</span></td><td class="r mono">11,777</td><td class="r">9.97%</td><td class="r mono">2,593</td><td class="r"><span class="hc h0">2.20%</span></td></tr>
+          <tr><td><b>BHARUCH DISTRICT CENTRAL CO OP</b></td><td class="r mono">14,825,076</td><td class="r mono">13,525,925</td><td class="r"><span class="hc h0">91.24%</span></td><td class="r mono">57,998</td><td class="r"><span class="hc h0">0.39%</span></td><td class="r mono">15,066</td><td class="r">0.10%</td><td class="r mono">128,739</td><td class="r"><span class="hc h0">0.87%</span></td></tr>
+          <tr class="tot"><td><b>Total</b></td><td class="r mono">19,206,596</td><td class="r mono">16,611,518</td><td class="r"><span class="hc h1">86.49%</span></td><td class="r mono">341,352</td><td class="r"><span class="hc h1">1.78%</span></td><td class="r mono">269,177</td><td class="r">1.40%</td><td class="r mono">578,725</td><td class="r"><span class="hc h2">3.01%</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    
+  <div class="footer"><div style="font-size:10px;color:var(--text3);">NPCI Dashboad· CCU Team · Last sync: 09:45 AM 14 Mar 2026</div></div>
+</div>
+
+
+<script>
+
+function drillproduct_tdbd(productName) {
+  window.selectedProduct = productName;
+
+  const bankTitle = document.querySelector('#page-tdbd .pg-title');
+  const bankSub   = document.querySelector('#page-tdbd .pg-sub');
+  if (bankTitle) bankTitle.textContent = 'Bank Wise — ' + productName;
+  if (bankSub)   bankSub.textContent   = 'Product: ' + productName;
+
+  showTab('bankmaster');
+}
+</script>
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- PAGE: CHARGEBACK & DEEMED -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="page-cb" class="page">
+  <div class="pg-hdr"><div><div class="pg-title">Chargeback & Deemed Report</div><div class="pg-sub"></div></div><div class="pg-ctrls"><button class="btn">⬇ Export</button></div></div>
+  <div class="g2">
+ 
+    <div class="panel">
+      <div class="ph"><div class="ph-ico" style="background:#F5F3FF;">📌</div><div class="ph-title">Product wise Deemed — FTD</div></div>
+      <table class="tbl">
+        <thead><tr><th>Product</th><th class="r">CB Vol</th><th class="r">CB Value</th><th class="r">Deemed Vol</th><th class="r">Deemed Val</th><th class="r">Deemed %</th></tr></thead>
+        <tbody>
+          <tr><td class="drillable" onclick="drillproduct_deemed('AEPS')">AEPS</td><td class="r mono">18</td><td class="r mono">67,600</td><td class="r mono">1</td><td class="r mono">1,500</td><td class="r"><span class="hc h2">5.56%</span></td></tr>
+          <tr><td class="drillable" onclick="drillproduct_deemed('IMPS')">IMPS</td><td class="r mono">865</td><td class="r mono">1,85,71,333</td><td class="r mono">20</td><td class="r mono">5,63,330</td><td class="r"><span class="hc h1">2.31%</span></td></tr>
+          <tr><td class="drillable" onclick="drillproduct_deemed('NFS')">NFS</td><td class="r mono">520</td><td class="r mono">33,08,450</td><td class="r mono">16</td><td class="r mono">95,900</td><td class="r"><span class="hc h2">3.08%</span></td></tr>
+          <tr><td class="drillable" onclick="drillproduct_deemed('UPI')">UPI</td><td class="r mono">8,367</td><td class="r mono">5,56,56,838</td><td class="r mono">25</td><td class="r mono">2,29,247</td><td class="r"><span class="hc h0">0.30%</span></td></tr>
+          <tr class="tot"><td><b>Total</b></td><td class="r mono">9,770</td><td class="r mono">7,76,04,221</td><td class="r mono">62</td><td class="r mono">8,89,977</td><td class="r"><span class="hc h1">0.63%</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="panel">
+      <div class="ph"><div class="ph-ico" style="background:#F5F3FF;">📌</div><div class="ph-title">Product wise Deemed — MTD</div></div>
+      <table class="tbl">
+        <thead><tr><th>Product</th><th class="r">CB Vol</th><th class="r">CB Value</th><th class="r">Deemed Vol</th><th class="r">Deemed Val</th><th class="r">Deemed %</th></tr></thead>
+        <tbody>
+          <tr><td>AEPS</td><td class="r mono">18</td><td class="r mono">67,600</td><td class="r mono">1</td><td class="r mono">1,500</td><td class="r"><span class="hc h2">5.56%</span></td></tr>
+          <tr><td>IMPS</td><td class="r mono">865</td><td class="r mono">1,85,71,333</td><td class="r mono">20</td><td class="r mono">5,63,330</td><td class="r"><span class="hc h1">2.31%</span></td></tr>
+          <tr><td>NFS</td><td class="r mono">520</td><td class="r mono">33,08,450</td><td class="r mono">16</td><td class="r mono">95,900</td><td class="r"><span class="hc h2">3.08%</span></td></tr>
+          <tr><td>UPI</td><td class="r mono">8,367</td><td class="r mono">5,56,56,838</td><td class="r mono">25</td><td class="r mono">2,29,247</td><td class="r"><span class="hc h0">0.30%</span></td></tr>
+          <tr class="tot"><td><b>Total</b></td><td class="r mono">9,770</td><td class="r mono">7,76,04,221</td><td class="r mono">62</td><td class="r mono">8,89,977</td><td class="r"><span class="hc h1">0.63%</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+       <div class="panel">
+      <div class="ph"><div class="ph-ico" style="background:#FEF2F2;">🔄</div><div class="ph-title">Product wise Due CB Volume</div></div>
+      <table class="tbl">
+        <thead><tr><th>Product</th><th class="r">Due Today Vol</th><th class="r">Due Today Val (₹)</th><th class="r">Due Tmrw Vol</th><th class="r">Due Tmrw Val (₹)</th></tr></thead>
+        <tbody>
+          <tr><td class="drillable" onclick="drillproduct_dues('AEPS')">AEPS</td><td class="r mono">2</td><td class="r mono">1,000</td><td class="r">—</td><td class="r">—</td></tr>
+          <tr><td class="drillable" onclick="drillproduct_dues('IMPS')">IMPS</td><td class="r mono">1</td><td class="r mono">5,000</td><td class="r mono">13</td><td class="r mono">1,511</td></tr>
+          <tr><td class="drillable" onclick="drillproduct_dues('NFS')">NFS</td><td class="r mono">1</td><td class="r mono">7,000</td><td class="r mono">2</td><td class="r mono">10,500</td></tr>
+          <tr><td class="drillable" onclick="drillproduct_dues('UPI-FC-WC')">UPI-FC-WC</td><td class="r mono">5</td><td class="r mono">96,306</td><td class="r mono">5</td><td class="r mono">67,026</td></tr>
+          <tr><td class="drillable" onclick="drillproduct_dues('UPI P2P B U3')">UPI P2P B U3</td><td class="r mono">2</td><td class="r mono">35,150</td><td class="r mono">1</td><td class="r mono">2,500</td></tr>
+          <tr><td class="drillable" onclick="drillproduct_dues('UPI P2P FB U3')">UPI P2P FB U3</td><td class="r mono">2</td><td class="r mono">384</td><td class="r">—</td><td class="r">—</td></tr>
+          <tr class="tot"><td><b>Total</b></td><td class="r"><b>13</b></td><td class="r"><b>₹1,44,840</b></td><td class="r"><b>21</b></td><td class="r"><b>₹81,537</b></td></tr>
+        </tbody>
+      </table>
+    </div>
+  <div class="panel">
+      <div class="ph"><div class="ph-ico" style="background:#FEF2F2;">🔄</div><div class="ph-title">ASP wise Deemed - MTD</div></div>
+      <table class="tbl">
+        <thead><tr><th>ASP</th><th class="r">CB VOL</th><th class="r">CB VALUE</th><th class="r">DEEMED VOL</th><th class="r">DEEMED VALUE</th></tr></thead>
+        <tbody>
+          <tr><td>FINACUS</td><td class="r mono">2</td><td class="r mono">1,000</td><td class="r">—</td><td class="r">—</td></tr>
+          <tr><td>SARVATRA</td><td class="r mono">1</td><td class="r mono">5,000</td><td class="r mono">13</td><td class="r mono">1,511</td></tr>
+          <tr><td>CEDGE</td><td class="r mono">1</td><td class="r mono">7,000</td><td class="r mono">2</td><td class="r mono">10,500</td></tr>
+          <tr><td>--</td><td class="r mono">5</td><td class="r mono">96,306</td><td class="r mono">5</td><td class="r mono">67,026</td></tr>
+          <tr><td>--</td><td class="r mono">2</td><td class="r mono">35,150</td><td class="r mono">1</td><td class="r mono">2,500</td></tr>
+          <tr><td>--</td><td class="r mono">2</td><td class="r mono">384</td><td class="r">—</td><td class="r">—</td></tr>
+          <tr class="tot"><td><b>Total</b></td><td class="r"><b>13</b></td><td class="r"><b>₹1,44,840</b></td><td class="r"><b>21</b></td><td class="r"><b>₹81,537</b></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+  <div class="panel">
+    <div class="ph"><div class="ph-ico" style="background:#F5F3FF;">📊</div><div class="ph-title">RM wise Deemed — MTD</div></div>
+    <table class="tbl">
+      <thead><tr><th>RM Name</th><th class="r">AEPS CB</th><th class="r">AEPS Deemed%</th><th class="r">IMPS CB</th><th class="r">IMPS Deemed%</th><th class="r">NFS CB</th><th class="r">NFS Deemed%</th><th class="r">UPI CB</th><th class="r">UPI Deemed%</th></tr></thead>
+      <tbody>
+        <tr><td>Ameya Save</td><td class="r mono">3</td><td class="r"><span class="hc h0">0.00%</span></td><td class="r mono">200</td><td class="r"><span class="hc h2">4.00%</span></td><td class="r mono">168</td><td class="r"><span class="hc h1">1.79%</span></td><td class="r mono">623</td><td class="r"><span class="hc h1">1.61%</span></td></tr>
+        <tr class="warn"><td>Deepak Panday</td><td class="r mono">2</td><td class="r"><span class="hc h4">50.00%</span></td><td class="r mono">159</td><td class="r"><span class="hc h2">6.29%</span></td><td class="r mono">162</td><td class="r"><span class="hc h2">4.32%</span></td><td class="r mono">368</td><td class="r"><span class="hc h1">1.09%</span></td></tr>
+        <tr><td>Divya Daiya</td><td class="r mono">0</td><td class="r"><span class="hc h0">0.00%</span></td><td class="r mono">62</td><td class="r"><span class="hc h0">0.00%</span></td><td class="r mono">35</td><td class="r"><span class="hc h0">0.00%</span></td><td class="r mono">652</td><td class="r"><span class="hc h0">0.00%</span></td></tr>
+        <tr><td>Himanshu Lal</td><td class="r mono">3</td><td class="r"><span class="hc h0">0.00%</span></td><td class="r mono">64</td><td class="r"><span class="hc h1">1.56%</span></td><td class="r mono">16</td><td class="r"><span class="hc h0">0.00%</span></td><td class="r mono">3009</td><td class="r"><span class="hc h0">0.03%</span></td></tr>
+        <tr><td>Mayur More</td><td class="r mono">9</td><td class="r"><span class="hc h0">0.00%</span></td><td class="r mono">284</td><td class="r"><span class="hc h0">0.00%</span></td><td class="r mono">97</td><td class="r"><span class="hc h2">3.09%</span></td><td class="r mono">3405</td><td class="r"><span class="hc h0">0.21%</span></td></tr>
+        <tr><td>Pratik Lohakane</td><td class="r mono">1</td><td class="r"><span class="hc h0">0.00%</span></td><td class="r mono">96</td><td class="r"><span class="hc h1">1.04%</span></td><td class="r mono">42</td><td class="r"><span class="hc h3">7.14%</span></td><td class="r mono">310</td><td class="r"><span class="hc h1">0.97%</span></td></tr>
+        <tr class="tot"><td><b>Total</b></td><td class="r mono">18</td><td class="r"><span class="hc h2">5.56%</span></td><td class="r mono">865</td><td class="r"><span class="hc h1">2.31%</span></td><td class="r mono">520</td><td class="r"><span class="hc h2">3.08%</span></td><td class="r mono">8367</td><td class="r"><span class="hc h0">0.30%</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  
+  
+  <div class="footer"><div style="font-size:10px;color:var(--text3);">NPCI Dashboad· CCU Team · Last sync: 09:45 AM 14 Mar 2026</div></div>
+</div>
+
+
+<Script>
+function drillproduct_dues(productName) {
+  window.selectedProduct = productName;
+
+  const bankTitle = document.querySelector('#page-cb .pg-title');
+  const bankSub   = document.querySelector('#page-cb .pg-sub');
+  if (bankTitle) bankTitle.textContent = 'Bank Wise — ' + productName;
+  if (bankSub)   bankSub.textContent   = 'Product: ' + productName;
+
+  showTab('cb dues');
+}
+  </script>
+
+
+
+
+<Script>
+function drillproduct_deemed(productName) {
+  window.selectedProduct = productName;
+
+  const bankTitle = document.querySelector('#page-cb .pg-title');
+  const bankSub   = document.querySelector('#page-cb .pg-sub');
+  if (bankTitle) bankTitle.textContent = 'Bank Wise — ' + productName;
+  if (bankSub)   bankSub.textContent   = 'Product: ' + productName;
+
+  showTab('deemed');
+}
+  </script>
+<!--------->
+
+<!-----CB Dues---->
+<div id="page-cb dues" class="page">
+  <div class="g2">
+    <div class="panel">
+      <div class="ph"><div class="ph-ico" style="background:#FEF2F2;">🏦</div><div class="ph-title">Bank Details — CB Due Today</div></div>
+      <table class="tbl">
+        <thead><tr><th>Bank Name</th><th>Product</th><th>Code</th><th>RM</th><th class="r">Vol</th><th class="r">Value (₹)</th></tr></thead>
+        <tbody>
+          <tr class="crit"><td class="bname" style="font-size:10.5px;">CHHATTISGARH RAJYA GRAMIN BANK</td><td>AEPS</td><td><span class="ctag">CGU</span></td><td style="font-size:10px;">Ameya Save</td><td class="r mono">2</td><td class="r mono">1,000</td></tr>
+          <tr class="crit"><td class="bname" style="font-size:10.5px;">VASAVI MSCM CO OP BANK LTD</td><td>IMPS</td><td><span class="ctag">VML</span></td><td style="font-size:10px;">Mayur More</td><td class="r mono">1</td><td class="r mono">5,000</td></tr>
+          <tr class="crit"><td class="bname" style="font-size:10.5px;">BHARUCH DISTRICT CENTRAL CO OP</td><td>NFS</td><td><span class="ctag">BHR</span></td><td style="font-size:10px;">Mayur More</td><td class="r mono">1</td><td class="r mono">7,000</td></tr>
+          <tr class="warn"><td class="bname" style="font-size:10.5px;">RAJARSHI SHAHU SAHAKARI BANK PUNE</td><td>UPI-FC-WC</td><td><span class="ctag">RJH</span></td><td style="font-size:10px;">Deepak Panday</td><td class="r mono">1</td><td class="r mono">20,000</td></tr>
+          <tr class="warn"><td class="bname" style="font-size:10.5px;">AHMEDABAD DIST CO OP BANK</td><td>UPI-FC-WC</td><td><span class="ctag">AHD</span></td><td style="font-size:10px;">Mayur More</td><td class="r mono">1</td><td class="r mono">30,000</td></tr>
+          <tr class="warn"><td class="bname" style="font-size:10.5px;">HARYANA STATE CO OP APEX BANK</td><td>UPI-FC-WC</td><td><span class="ctag">HSC</span></td><td style="font-size:10px;">Pratik Lohakane</td><td class="r mono">1</td><td class="r mono">36,960</td></tr>
+          <tr class="warn"><td class="bname" style="font-size:10.5px;">MUZAFFARNAGAR DISTRICT CO OP</td><td>UPI P2P B U3</td><td><span class="ctag">MDC</span></td><td style="font-size:10px;">Deepak Panday</td><td class="r mono">2</td><td class="r mono">35,150</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="panel">
+      <div class="ph"><div class="ph-ico" style="background:#FFF7ED;">🏦</div><div class="ph-title">Bank Details — CB Due Tomorrow</div></div>
+      <table class="tbl">
+        <thead><tr><th>Bank Name</th><th>Product</th><th>Code</th><th>RM</th><th class="r">Vol</th><th class="r">Value (₹)</th></tr></thead>
+        <tbody>
+          <tr><td class="bname" style="font-size:10.5px;">BHAVNAGAR DISTRICT CO OP BANK</td><td>IMPS</td><td><span class="ctag">BVN</span></td><td style="font-size:10px;">Mayur More</td><td class="r mono">12</td><td class="r mono">1,499</td></tr>
+          <tr><td class="bname" style="font-size:10.5px;">AGRASEN NAGARI SAHAKARI BANK AKOLA</td><td>IMPS</td><td><span class="ctag">ASX</span></td><td style="font-size:10px;">Pratik Lohakane</td><td class="r mono">1</td><td class="r mono">12</td></tr>
+          <tr><td class="bname" style="font-size:10.5px;">JILA SAHAKARI KENDRIYA MARYADIT</td><td>NFS</td><td><span class="ctag">ZSR</span></td><td style="font-size:10px;">Ameya Save</td><td class="r mono">1</td><td class="r mono">9,500</td></tr>
+          <tr><td class="bname" style="font-size:10.5px;">URBAN CO OP BANK 1758 PERINTHALMANNA</td><td>NFS</td><td><span class="ctag">UPR</span></td><td style="font-size:10px;">Pratik Lohakane</td><td class="r mono">1</td><td class="r mono">1,000</td></tr>
+          <tr><td class="bname" style="font-size:10.5px;">DOMBIVLI NAGARI SAHAKARI BANK</td><td>UPI-FC-WC</td><td><span class="ctag">DSB</span></td><td style="font-size:10px;">Ameya Save</td><td class="r mono">2</td><td class="r mono">14,151</td></tr>
+          <tr><td class="bname" style="font-size:10.5px;">CHIKHLI URBAN CO OP BANK</td><td>UPI-FC-WC</td><td><span class="ctag">CKL</span></td><td style="font-size:10px;">Deepak Panday</td><td class="r mono">1</td><td class="r mono">30,000</td></tr>
+          <tr><td class="bname" style="font-size:10.5px;">HARYANA STATE CO OP APEX BANK</td><td>UPI-FC-WC</td><td><span class="ctag">HSC</span></td><td style="font-size:10px;">Pratik Lohakane</td><td class="r mono">1</td><td class="r mono">21,875</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!--------->
+
+<!-----CB Deemed---->
+<div id="page-deemed" class="page">
+  <div class="panel">
+    <div class="ph"><div class="ph-ico" style="background:#F5F3FF;">📊</div><div class="ph-title">Bank wise Deemed — MTD</div></div>
+    <table class="tbl">
+      <thead><tr><th>Bank Name</th><th class="r">Product</th><th class="r">Product Code</th><th class="r">Volume</th><th class="r">Value</th><th class="r">RM Name</th><th class="r">ASP</th></tr></thead>
+      <tbody>
+        <tr><td>Bhavnagar DCCB</td><td class="r mono">AEPS</td><td class="r"><span class="r mono">ABC</span></td><td class="r mono">2</td><td class="r"><span class="r">4</span></td><td class="r mono">Ameya Save</td><td class="r"><span class="r">Sarvatra</span></td></td></tr>
+        <tr></tr><td>AP Mahesh Bank</td><td class="r">AEPS</td><td class="r"><span class="r mono">FRD</span></td><td class="r mono">1</td><td class="r"><span class="r">6000</span></td><td class="r mono">Deepak Pandey</td><td class="r"><span class="r">Sarvatra</span></td></td></tr>
+        <tr><td>Arunachal Pradesh Coop bank</td><td class="r mono">IMPS</td><td class="r"><span class="r">DEF</span></td><td class="r mono">2</td><td class="r"><span class="r">250000</span></td><td class="r mono">Deepak Pandey</td><td class="r"><span class="r">Sarvatra</span></td></td></tr>
+        <tr><td>Sangli DCCB</td><td class="r mono">IMS</td><td class="r"><span class="r">HYG</span></td><td class="r mono">1</td><td class="r"><span class="r">140%</span></td><td class="r mono">Pratik Lohakane</td><td class="r"><span class="r">CEDGE</span></td></tr>
+        <tr><td>JANATA COOP BANK</td><td class="r mono">NFS</td><td class="r"><span class="r">KJU</span></td><td class="r mono">2</td><td class="r"><span class="r">8790</span></td><td class="r mono">Pratik Lohakane</td><td class="r"><span class="r">Finacus</span></td></tr>
+        <tr class="tot"><td><b>Total</b></td><td class="r mono"></td><td class="r"><span class="r"></span></td><td class="r mono">8</td><td class="r"><span class="r">2</span></td><td class="r mono"></td><td class="r"><span class="r"></span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- PAGE: TCC/RET -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="page-tcc" class="page">
+  <div class="pg-hdr"><div><div class="pg-title">TCC / RET Report</div><div class="pg-sub">UPI & IMPS Transaction Credit Confirmation / Return</div></div><div class="pg-ctrls"><button class="btn">⬇ Export</button></div></div>
+  <div class="g1">
+    
+    <div class="panel">
+      <div class="ph"><div class="ph-ico" style="background:#FFF7ED;">📊</div><div class="ph-title">RM wise Bank Count — UPI (by Ageing)</div></div>
+      <table class="tbl">
+        <thead><tr><th>RM Name</th><th class="r">2-5d</th><th class="r">6-10d</th><th class="r">11-20d</th><th class="r">21-30d</th><th class="r">31-60d</th><th class="r">Total</th></tr></thead>
+        <tbody>
+          <tr><td class="drillable" onclick="drillRM_tcc_upi('Ameya Save')">Ameya Save</td><td class="r">11</td><td class="r">1</td><td class="r">2</td><td class="r">3</td><td class="r"><span class="hc h2">10</span></td><td class="r mono">27</td></tr>
+          <tr><td class="drillable" onclick="drillRM_tcc_upi('Deepak Panday')">Deepak Panday</td><td class="r">3</td><td class="r">4</td><td class="r">1</td><td class="r">1</td><td class="r"><span class="hc h1">7</span></td><td class="r mono">16</td></tr>
+          <tr><td class="drillable" onclick="drillRM_tcc_upi('Himashu Lal')">Himanshu Lal</td><td class="r">—</td><td class="r">—</td><td class="r">—</td><td class="r">—</td><td class="r"><span class="hc h0">1</span></td><td class="r mono">1</td></tr>
+          <tr><td class="drillable" onclick="drillRM_tcc_upi('Mayur Save')">Mayur More</td><td class="r">10</td><td class="r">1</td><td class="r">5</td><td class="r">1</td><td class="r"><span class="hc h1">4</span></td><td class="r mono">21</td></tr>
+          <tr><td class="drillable" onclick="drillRM_tcc_upi('Pratik Lohakane')">Pratik Lohakane</td><td class="r">10</td><td class="r">1</td><td class="r">1</td><td class="r">4</td><td class="r"><span class="hc h2">8</span></td><td class="r mono">24</td></tr>
+          <tr class="tot"><td><b>Total</b></td><td class="r">34</td><td class="r">7</td><td class="r">9</td><td class="r">9</td><td class="r"><span class="hc h2">30</span></td><td class="r mono"><b>89</b></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>  
+
+    <div class="panel">
+      <div class="ph"><div class="ph-ico" style="background:#FFF7ED;">📊</div><div class="ph-title">RM wise Bank Count — IMPS (by Ageing)</div></div>
+      <table class="tbl">
+        <thead><tr><th>RM Name</th><th class="r">2-5d</th><th class="r">6-10d</th><th class="r">11-20d</th><th class="r">21-30d</th><th class="r">31-60d</th><th class="r">Total</th></tr></thead>
+        <tbody>
+          <tr><td class="drillable" onclick="drillRM_tcc_imps('Ameya Save')">Ameya Save</td><td class="r">11</td><td class="r">1</td><td class="r">2</td><td class="r">3</td><td class="r"><span class="hc h2">10</span></td><td class="r mono">27</td></tr>
+          <tr><td class="drillable" onclick="drillRM_tcc_imps('Deepak Panday')">Deepak Panday</td><td class="r">3</td><td class="r">4</td><td class="r">1</td><td class="r">1</td><td class="r"><span class="hc h1">7</span></td><td class="r mono">16</td></tr>
+          <tr><td class="drillable" onclick="drillRM_tcc_imps('Himanshu Lal')">Himanshu Lal</td><td class="r">—</td><td class="r">—</td><td class="r">—</td><td class="r">—</td><td class="r"><span class="hc h0">1</span></td><td class="r mono">1</td></tr>
+          <tr><td class="drillable" onclick="drillRM_tcc_imps('Mayur More')">Mayur More</td><td class="r">10</td><td class="r">1</td><td class="r">5</td><td class="r">1</td><td class="r"><span class="hc h1">4</span></td><td class="r mono">21</td></tr>
+          <tr><td class="drillable" onclick="drillRM_tcc_imps('Pratik Lohakane')">Pratik Lohakane</td><td class="r">10</td><td class="r">1</td><td class="r">1</td><td class="r">4</td><td class="r"><span class="hc h2">8</span></td><td class="r mono">24</td></tr>
+          <tr class="tot"><td><b>Total</b></td><td class="r">34</td><td class="r">7</td><td class="r">9</td><td class="r">9</td><td class="r"><span class="hc h2">30</span></td><td class="r mono"><b>89</b></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  
+ 
+  
+  <div class="footer"><div style="font-size:10px;color:var(--text3);">NPCI Dashboad· CCU Team · Last sync: 09:45 AM 14 Mar 2026</div></div>
+</div>
+
+
+
+
+<script>
+
+function drillRM_tcc_upi(rmName) {
+  window.selectedRM = rmName;
+
+  // inject RM context into bank page header
+  const bankSub = document.querySelector('#page-bankmaster .pg-sub');
+  if (bankSub) bankSub.textContent = 'Drilled from DRC  ·  RM: ' + rmName;
+
+  // update panel title too (optional)
+  const panelTitle = document.querySelector('#page-bankmaster .ph-title');
+  if (panelTitle) panelTitle.textContent = 'Bank wise TD/BD Data — RM: ' + rmName;
+
+  // navigate to bank page
+  showTab('tcc data UPI');
+
+}
+
+function drillRM_tcc_imps(rmName) {
+  window.selectedRM = rmName;
+
+  // inject RM context into bank page header
+  const bankSub = document.querySelector('#page-bankmaster .pg-sub');
+  if (bankSub) bankSub.textContent = 'Drilled from DRC  ·  RM: ' + rmName;
+
+  // update panel title too (optional)
+  const panelTitle = document.querySelector('#page-bankmaster .ph-title');
+  if (panelTitle) panelTitle.textContent = 'Bank wise TD/BD Data — RM: ' + rmName;
+
+  // navigate to bank page
+  showTab('tcc data IMPS');
+}
+</script>
+
+
+
+
+<!------------------------------------------------------->
+<div id="page-tcc data UPI" class="page">
+ <div class="panel">
+    <div class="ph"><div class="ph-ico" style="background:#EFF6FF;">🏦</div><div class="ph-title">Bank wise Details — UPI TCC/RET</div></div>
+    <table class="tbl">
+      <thead><tr><th>Date</th><th>Prod Code</th><th>Bank Name</th><th>TXN Date</th><th>RRN</th><th class="r">Amount (₹)</th><th>RM Name</th></tr></thead>
+      <tbody>
+        <tr><td>13/03/26</td><td><span class="ctag">AMS</span></td><td class="bname" style="font-size:10.5px;">AMBIKA MAHILA SAHAKARI BANK AHMEDNAGAR</td><td>—</td><td class="mono" style="font-size:10px;">"263182956673"</td><td class="r mono">20</td><td style="font-size:10px;">Pratik Lohakane</td></tr>
+        <tr><td>13/03/26</td><td><span class="ctag">AMS</span></td><td class="bname" style="font-size:10.5px;">AMBIKA MAHILA SAHAKARI BANK AHMEDNAGAR</td><td>—</td><td class="mono" style="font-size:10px;">"463859806206"</td><td class="r mono">10</td><td style="font-size:10px;">Pratik Lohakane</td></tr>
+        <tr class="warn"><td>13/03/26</td><td><span class="ctag">AMS</span></td><td class="bname" style="font-size:10.5px;">AMBIKA MAHILA SAHAKARI BANK AHMEDNAGAR</td><td>—</td><td class="mono" style="font-size:10px;">"520690615748"</td><td class="r mono">9,000</td><td style="font-size:10px;">Pratik Lohakane</td></tr>
+        <tr><td>13/03/26</td><td><span class="ctag">AZA</span></td><td class="bname" style="font-size:10.5px;">AZAD CO OPERATIVE BANK GADAG</td><td>—</td><td class="mono" style="font-size:10px;">"079843661606"</td><td class="r mono">250</td><td style="font-size:10px;">Deepak Panday</td></tr>
+        <tr><td>13/03/26</td><td><span class="ctag">BEA</span></td><td class="bname" style="font-size:10.5px;">BELAGAVI SHREE BASAVESHWAR CO OP BANK</td><td>—</td><td class="mono" style="font-size:10px;">"398506743329"</td><td class="r mono">1</td><td style="font-size:10px;">Deepak Panday</td></tr>
+        <tr class="warn"><td>13/03/26</td><td><span class="ctag">BEA</span></td><td class="bname" style="font-size:10.5px;">BELAGAVI SHREE BASAVESHWAR CO OP BANK</td><td>—</td><td class="mono" style="font-size:10px;">"643307905040"</td><td class="r mono">1,000</td><td style="font-size:10px;">Deepak Panday</td></tr>
+      </tbody>
+    </table>
+  </div>
+ </div> 
+
+
+ <!------------------------------------------------------->
+<div id="page-tcc data IMPS" class="page">
+  <div class="panel">
+    <div class="ph"><div class="ph-ico" style="background:#EFF6FF;">🏦</div><div class="ph-title">Bank wise Details — IMPS TCC/RET</div></div>
+    <table class="tbl">
+      <thead><tr><th>Date</th><th>Prod Code</th><th>Bank Name</th><th>TXN Date</th><th>RRN</th><th class="r">Amount (₹)</th><th>RM Name</th></tr></thead>
+      <tbody>
+        <tr><td>13/03/26</td><td><span class="ctag">AMS</span></td><td class="bname" style="font-size:10.5px;">AMBIKA MAHILA SAHAKARI BANK AHMEDNAGAR</td><td>—</td><td class="mono" style="font-size:10px;">"263182956673"</td><td class="r mono">20</td><td style="font-size:10px;">Pratik Lohakane</td></tr>
+        <tr><td>13/03/26</td><td><span class="ctag">AMS</span></td><td class="bname" style="font-size:10.5px;">AMBIKA MAHILA SAHAKARI BANK AHMEDNAGAR</td><td>—</td><td class="mono" style="font-size:10px;">"463859806206"</td><td class="r mono">10</td><td style="font-size:10px;">Pratik Lohakane</td></tr>
+        <tr class="warn"><td>13/03/26</td><td><span class="ctag">AMS</span></td><td class="bname" style="font-size:10.5px;">AMBIKA MAHILA SAHAKARI BANK AHMEDNAGAR</td><td>—</td><td class="mono" style="font-size:10px;">"520690615748"</td><td class="r mono">9,000</td><td style="font-size:10px;">Pratik Lohakane</td></tr>
+        <tr><td>13/03/26</td><td><span class="ctag">AZA</span></td><td class="bname" style="font-size:10.5px;">AZAD CO OPERATIVE BANK GADAG</td><td>—</td><td class="mono" style="font-size:10px;">"079843661606"</td><td class="r mono">250</td><td style="font-size:10px;">Deepak Panday</td></tr>
+        <tr><td>13/03/26</td><td><span class="ctag">BEA</span></td><td class="bname" style="font-size:10.5px;">BELAGAVI SHREE BASAVESHWAR CO OP BANK</td><td>—</td><td class="mono" style="font-size:10px;">"398506743329"</td><td class="r mono">1</td><td style="font-size:10px;">Deepak Panday</td></tr>
+        <tr class="warn"><td>13/03/26</td><td><span class="ctag">BEA</span></td><td class="bname" style="font-size:10.5px;">BELAGAVI SHREE BASAVESHWAR CO OP BANK</td><td>—</td><td class="mono" style="font-size:10px;">"643307905040"</td><td class="r mono">1,000</td><td style="font-size:10px;">Deepak Panday</td></tr>
+      </tbody>
+    </table>
+  </div>
+ </div> 
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- PAGE: RRC -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="page-rrc" class="page">
+  <div class="pg-hdr"><div><div class="pg-title">RRC Report</div><div class="pg-sub">Return Reversal Confirmation</div></div><div class="pg-ctrls"><button class="btn">⬇ Export</button></div></div>
+  <div class="g14">
+    <div class="panel">
+      <div class="ph"><div class="ph-ico" style="background:#FFFBEB;">📊</div><div class="ph-title">RM wise Bank Count — Ageing</div></div>
+      <table class="tbl">
+        <thead><tr><th>RM Name</th><th class="r">2-5d</th><th class="r">6-10d</th><th class="r">11-20d</th><th class="r">21-30d</th><th class="r">31-40d</th><th class="r">41-50d</th><th class="r">51-60d</th><th class="r">Total</th></tr></thead>
+        <tbody>
+          <tr><td class="drillable" onclick="drillRM_rrc('Himanshu Lal')">Himanshu Lal</td><td class="r">—</td><td class="r">1</td><td class="r">—</td><td class="r">—</td><td class="r">—</td><td class="r">—</td><td class="r">—</td><td class="r">1</td></tr>
+          <tr><td class="drillable" onclick="drillRM_rrc('Ameya Save')">Ameya Save</td><td class="r">5</td><td class="r">6</td><td class="r">4</td><td class="r">6</td><td class="r">3</td><td class="r">4</td><td class="r"><span class="hc h2">4</span></td><td class="r">17</td></tr>
+          <tr><td class="drillable" onclick="drillRM_rrc('Pratik Lohakane')">Pratik Lohakane</td><td class="r">5</td><td class="r">2</td><td class="r">5</td><td class="r">3</td><td class="r">2</td><td class="r">2</td><td class="r"><span class="hc h0">1</span></td><td class="r">28</td></tr>
+          <tr class="warn"><td class="drillable" onclick="drillRM_rrc('Deepak Panday')">Deepak Panday</td><td class="r">11</td><td class="r">8</td><td class="r">5</td><td class="r">5</td><td class="r">3</td><td class="r">3</td><td class="r"><span class="hc h0">1</span></td><td class="r">22</td></tr>
+          <tr class="warn"><td class="drillable" onclick="drillRM_rrc('Mayur More')">Mayur More</td><td class="r">8</td><td class="r">13</td><td class="r">7</td><td class="r">6</td><td class="r">6</td><td class="r">6</td><td class="r"><span class="hc h2">6</span></td><td class="r">9</td></tr>
+          <tr class="tot"><td><b>Total</b></td><td class="r">29</td><td class="r">30</td><td class="r">21</td><td class="r">20</td><td class="r">14</td><td class="r">15</td><td class="r"><span class="hc h2">12</span></td><td class="r">25</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div> 
+  <div class="footer"><div style="font-size:10px;color:var(--text3);">NPCI Dashboad· CCU Team · Last sync: 09:45 AM 14 Mar 2026</div></div>
+</div>
+
+
+<script>
+
+function drillRM_rrc(rmName) {
+  window.selectedRM = rmName;
+
+  // inject RM context into bank page header
+  const bankSub = document.querySelector('#page-rrc data .pg-sub');
+  if (bankSub) bankSub.textContent = 'Drilled from RRC  ·  RM: ' + rmName;
+
+  // update panel title too (optional)
+  const panelTitle = document.querySelector('#page-rrc data .ph-title');
+  if (panelTitle) panelTitle.textContent = 'Bank wise RRC Pending Details — RM: ' + rmName;
+
+  // navigate to bank page
+  showTab('rrc data');
+
+}
+
+</script>
+<!------------->
+<!-- RRC -->
+<div id="page-rrc data" class="page">
+  <div class="panel">
+    <div class="ph"><div class="ph-ico" style="background:#EFF6FF;">🏦</div><div class="ph-title">Bank wise RRC Pending Details</div></div>
+    <table class="tbl">
+        <thead><tr><th>Date</th><th>Code</th><th>Bank Name</th><th>TXN Date</th><th>RRN</th><th class="r">Amount</th><th>RM</th></tr></thead>
+        <tbody>
+          <tr><td>13/03</td><td><span class="ctag">AMB</span></td><td style="font-size:10.5px;">AMBAJOGAI PEOPLES CO OP BANK</td><td>09/03</td><td class="mono" style="font-size:10px;">"440287243998"</td><td class="r mono">1</td><td style="font-size:10px;">Pratik Lohakane</td></tr>
+          <tr><td>13/03</td><td><span class="ctag">ASX</span></td><td style="font-size:10.5px;">AGRASEN NAGARI SAHAKARI BANK AKOLA</td><td>01/03</td><td class="mono" style="font-size:10px;">"652429065812"</td><td class="r mono">102</td><td style="font-size:10px;">Pratik Lohakane</td></tr>
+          <tr><td>13/03</td><td><span class="ctag">BAN</span></td><td style="font-size:10.5px;">BANGALORE CITY CO OP BANK LTD</td><td>06/03</td><td class="mono" style="font-size:10px;">"643117609884"</td><td class="r mono">1,628</td><td style="font-size:10px;">Deepak Panday</td></tr>
+          <tr class="warn"><td>13/03</td><td><span class="ctag">BMC</span></td><td style="font-size:10.5px;">BOMBAY MERCANTILE CO OP BANK</td><td>01/10</td><td class="mono" style="font-size:10px;">"601087493554"</td><td class="r mono">4,781</td><td style="font-size:10px;">Deepak Panday.</td></tr>
+          <tr class="warn"><td>13/03</td><td><span class="ctag">BMC</span></td><td style="font-size:10.5px;">BOMBAY MERCANTILE CO OP BANK</td><td>02/02</td><td class="mono" style="font-size:10px;">"627788797293"</td><td class="r mono">240</td><td style="font-size:10px;">Deepak Panday</td></tr>
+          <tr class="crit"><td>13/03</td><td><span class="ctag">BMC</span></td><td style="font-size:10.5px;">BOMBAY MERCANTILE CO OP BANK</td><td>01/03</td><td class="mono" style="font-size:10px;">"606086429614"</td><td class="r mono">6,500</td><td style="font-size:10px;">Deepak Panday</td></tr>
+          <tr class="crit"><td>13/03</td><td><span class="ctag">BVN</span></td><td style="font-size:10.5px;">BHAVNAGAR DISTRICT CO OP BANK</td><td>09/03</td><td class="mono" style="font-size:10px;">"606811380556"</td><td class="r mono">1,000</td><td style="font-size:10px;">Mayur More</td></tr>
+          <tr class="crit"><td>13/03</td><td><span class="ctag">BVN</span></td><td style="font-size:10.5px;">BHAVNAGAR DISTRICT CO OP BANK</td><td>09/03</td><td class="mono" style="font-size:10px;">"606825029188"</td><td class="r mono">1,20,000</td><td style="font-size:10px;">Mayur More</td></tr>
+        </tbody>
+      </table>
+  </div>
+ </div> 
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- PAGE: DRC -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="page-drc" class="page">
+  <div class="pg-hdr"><div><div class="pg-title">DRC Report</div><div class="pg-sub">Debit Reversal Confirmation</div></div><div class="pg-ctrls"><button class="btn">⬇ Export</button></div></div>
+  <div class="g14">
+    <div class="panel">
+      <div class="ph"><div class="ph-ico" style="background:#FFFBEB;">📊</div><div class="ph-title">RM wise Bank Count — Ageing</div></div>
+      <table class="tbl">
+        <thead><tr><th>RM Name</th><th class="r">2-5d</th><th class="r">6-10d</th><th class="r">11-20d</th><th class="r">21-30d</th><th class="r">31-40d</th><th class="r">41-50d</th><th class="r">51-60d</th><th class="r">Total</th></tr></thead>
+        <tbody>
+  <tr><td class="drillable" onclick="drillRM_drc('Himanshu Lal')">Himanshu Lal</td><td class="r">—</td><td class="r">1</td><td class="r">—</td><td class="r">—</td><td class="r">—</td><td class="r">—</td><td class="r">—</td><td class="r">1</td></tr>
+  <tr><td class="drillable" onclick="drillRM_drc('Ameya Save')">Ameya Save</td><td class="r">5</td><td class="r">6</td><td class="r">4</td><td class="r">6</td><td class="r">3</td><td class="r">4</td><td class="r"><span class="hc h2">4</span></td><td class="r">17</td></tr>
+  <tr><td class="drillable" onclick="drillRM_drc('Pratik L.')">Pratik L.</td><td class="r">5</td><td class="r">2</td><td class="r">5</td><td class="r">3</td><td class="r">2</td><td class="r">2</td><td class="r"><span class="hc h0">1</span></td><td class="r">28</td></tr>
+  <tr class="warn"><td class="drillable" onclick="drillRM_drc('Deepak P.')">Deepak P.</td><td class="r">11</td><td class="r">8</td><td class="r">5</td><td class="r">5</td><td class="r">3</td><td class="r">3</td><td class="r"><span class="hc h0">1</span></td><td class="r">22</td></tr>
+  <tr class="warn"><td class="drillable" onclick="drillRM_drc('Mayur More')">Mayur More</td><td class="r">8</td><td class="r">13</td><td class="r">7</td><td class="r">6</td><td class="r">6</td><td class="r">6</td><td class="r"><span class="hc h2">6</span></td><td class="r">9</td></tr>
+  <tr class="tot"><td><b>Total</b></td><td class="r">29</td><td class="r">30</td><td class="r">21</td><td class="r">20</td><td class="r">14</td><td class="r">15</td><td class="r"><span class="hc h2">12</span></td><td class="r">25</td></tr>
+</tbody>
+      </table>
+    </div>
+   
+  </div>
+   
+  <div class="footer"><div style="font-size:10px;color:var(--text3);">NPCI Dashboad· CCU Team · Last sync: 09:45 AM 14 Mar 2026</div></div>
+</div>
+
+
+
+
+<script>
+
+function drillRM_drc(rmName) {
+  window.selectedRM = rmName;
+
+  // inject RM context into bank page header
+  const bankSub = document.querySelector('#page-drc data .pg-sub');
+  if (bankSub) bankSub.textContent = 'Drilled from RRC  ·  RM: ' + rmName;
+
+  // update panel title too (optional)
+  const panelTitle = document.querySelector('#page-drc data .ph-title');
+  if (panelTitle) panelTitle.textContent = 'Bank wise RRC Pending Details — RM: ' + rmName;
+
+  // navigate to bank page
+  showTab('drc data');
+
+}
+
+</script>
+<!------------->
+<!-- DRC -->
+<div id="page-drc data" class="page">
+  <div class="panel">
+    <div class="ph"><div class="ph-ico" style="background:#EFF6FF;">🏦</div><div class="ph-title">Bank wise DRC Pending Details</div></div>
+    <table class="tbl">
+        <thead><tr><th>Date</th><th>Code</th><th>Bank Name</th><th>TXN Date</th><th>RRN</th><th class="r">Amount</th><th>RM</th></tr></thead>
+        <tbody>
+          <tr><td>13/03</td><td><span class="ctag">AMB</span></td><td style="font-size:10.5px;">AMBAJOGAI PEOPLES CO OP BANK</td><td>09/03</td><td class="mono" style="font-size:10px;">"440287243998"</td><td class="r mono">1</td><td style="font-size:10px;">Pratik Lohakane</td></tr>
+          <tr><td>13/03</td><td><span class="ctag">ASX</span></td><td style="font-size:10.5px;">AGRASEN NAGARI SAHAKARI BANK AKOLA</td><td>01/03</td><td class="mono" style="font-size:10px;">"652429065812"</td><td class="r mono">102</td><td style="font-size:10px;">Pratik Lohakane</td></tr>
+          <tr><td>13/03</td><td><span class="ctag">BAN</span></td><td style="font-size:10.5px;">BANGALORE CITY CO OP BANK LTD</td><td>06/03</td><td class="mono" style="font-size:10px;">"643117609884"</td><td class="r mono">1,628</td><td style="font-size:10px;">Deepak Panday</td></tr>
+          <tr class="warn"><td>13/03</td><td><span class="ctag">BMC</span></td><td style="font-size:10.5px;">BOMBAY MERCANTILE CO OP BANK</td><td>01/10</td><td class="mono" style="font-size:10px;">"601087493554"</td><td class="r mono">4,781</td><td style="font-size:10px;">Deepak Panday.</td></tr>
+          <tr class="warn"><td>13/03</td><td><span class="ctag">BMC</span></td><td style="font-size:10.5px;">BOMBAY MERCANTILE CO OP BANK</td><td>02/02</td><td class="mono" style="font-size:10px;">"627788797293"</td><td class="r mono">240</td><td style="font-size:10px;">Deepak Panday</td></tr>
+          <tr class="crit"><td>13/03</td><td><span class="ctag">BMC</span></td><td style="font-size:10.5px;">BOMBAY MERCANTILE CO OP BANK</td><td>01/03</td><td class="mono" style="font-size:10px;">"606086429614"</td><td class="r mono">6,500</td><td style="font-size:10px;">Deepak Panday</td></tr>
+          <tr class="crit"><td>13/03</td><td><span class="ctag">BVN</span></td><td style="font-size:10.5px;">BHAVNAGAR DISTRICT CO OP BANK</td><td>09/03</td><td class="mono" style="font-size:10px;">"606811380556"</td><td class="r mono">1,000</td><td style="font-size:10px;">Mayur More</td></tr>
+          <tr class="crit"><td>13/03</td><td><span class="ctag">BVN</span></td><td style="font-size:10.5px;">BHAVNAGAR DISTRICT CO OP BANK</td><td>09/03</td><td class="mono" style="font-size:10px;">"606825029188"</td><td class="r mono">1,20,000</td><td style="font-size:10px;">Mayur More</td></tr>
+        </tbody>
+      </table>
+  </div>
+ </div> 
+
+
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- PAGE: CRM -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="page-crm" class="page">
+  <div class="pg-hdr"><div><div class="pg-title">CCU Ticket Overview — CRM</div><div class="pg-sub"></div></div></div>
+  <div class="kpi-row">
+    <div class="kpi bl"><div class="kpi-lbl">Total Tickets</div><div class="kpi-val">320</div><div class="kpi-d neu"></div></div>
+    <div class="kpi gr"><div class="kpi-lbl">New Tickets</div><div class="kpi-val">6</div><div class="kpi-d neu"></div></div>
+    <div class="kpi am"><div class="kpi-lbl">Open (Within SLA)</div><div class="kpi-val">13</div><div class="kpi-d neu"></div></div>
+    <div class="kpi rd"><div class="kpi-lbl">Open (SLA Breached)</div><div class="kpi-val">5</div><div class="kpi-d dn">Due Today</div></div>
+    <div class="kpi gr"><div class="kpi-lbl">Closed (Within Breached)</div><div class="kpi-val">5</div><div class="kpi-d dn"></div></div>
+    <div class="kpi rd"><div class="kpi-lbl">Closed (SLA Breached)</div><div class="kpi-val">5</div><div class="kpi-d dn"></div></div>
+
+
+  </div>
+  <div class="g2">
+    <div class="panel">
+      <div class="ph"><div class="ph-ico" style="background:#EFF6FF;">📋</div><div class="ph-title">Top 10 Category — Raised Tickets</div></div>
+      <table class="tbl">
+        <thead><tr><th>Category</th><th class="r">Raised Tickets</th></tr></thead>
+        <tbody>
+          <tr><td colspan="2" style="text-align:center;padding:20px;color:var(--text3);font-size:11px;">CRM data not yet loaded — connect CRM source</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="panel">
+      <div class="ph"><div class="ph-ico" style="background:#FFF7ED;">👥</div><div class="ph-title">RM wise Status Summary</div></div>
+      <table class="tbl">
+        <thead><tr><th>RM Name</th><th class="r">Raised</th><th class="r">Open (Within SLA)</th><th class="r">Open (SLA Breached)</th><th class="r">Closed (SLA Breached)</th></tr></thead>
+        <tbody>
+          <tr><td>Ameya Save</td><td class="r">23</td><td class="r">12</td><td class="r">5</td><td class="r">—</td></tr>
+          <tr><td>Deepak Panday</td><td class="r">12</td><td class="r">7</td><td class="r">1</td><td class="r">—</td></tr>
+          <tr><td>Mayur More</td><td class="r">20</td><td class="r">3</td><td class="r">0</td><td class="r">—</td></tr>
+          <tr><td>Pratik Lohakane</td><td class="r">15</td><td class="r">3</td><td class="r">2</td><td class="r">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+    
+  </div>
+
+<div class="g2">
+    <div class="panel">
+      <div class="ph"><div class="ph-ico" style="background:#EFF6FF;">📋</div><div class="ph-title">Team wise Pending Tickets</div></div>
+      <table class="tbl">
+        <thead><tr><th>Team</th><th class="r">Within SLA</th><th class="r">SLA Breached</th></tr></thead>
+        <tbody>
+          <tr><td>Operation</td><td class="r">6</td><td class="r">2</td></tr>
+          <tr><td>Production</td><td class="r">2</td><td class="r">0</td></tr>
+          <tr><td>Risk</td><td class="r">1</td><td class="r">6</td></tr>
+          <tr><td>ERP</td><td class="r">5</td><td class="r">4</td></tr>
+          <tr><td>Helpdesk</td><td class="r">8</td><td class="r">2</td></tr>
+          <tr><td>CCU</td><td class="r">0</td><td class="r">1</td></tr>
+        </tbody>
+      </table>
+    </div>
+</div>      
+  <div class="footer"><div style="font-size:10px;color:var(--text3);">NPCI Dashboad· CCU Team · Last sync: 09:45 AM 14 Mar 2026</div></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- PAGE: GST -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="page-gst" class="page">
+  <div class="pg-hdr"><div><div class="pg-title">GST Pending Report</div><div class="pg-sub"></div></div><div class="pg-ctrls"><button class="btn">⬇ Export</button></div></div>
+  <div class="g4">
+    <div class="kpi rd"><div class="kpi-lbl">Total Pending %</div><div class="kpi-val">74.8%</div><div class="kpi-d dn">Ecosysteam</div></div>
+    <div class="kpi am"><div class="kpi-lbl">CCU Pending %</div><div class="kpi-val">69.4%</div><div class="kpi-d dn"></div></div>
+    <div class="kpi rd"><div class="kpi-lbl">Commercial %</div><div class="kpi-val">91.3%</div><div class="kpi-d dn"></div></div>
+    <div class="kpi am"><div class="kpi-lbl">NACH Pending %</div><div class="kpi-val">74.7%</div><div class="kpi-d dn"></div></div>
+  </div>
+  <div class="g2">
+    <div class="panel">
+      <div class="ph"><div class="ph-ico" style="background:#FEF2F2;">📊</div><div class="ph-title">Pending % by Bank Type</div></div>
+      <table class="tbl">
+        <thead><tr><th>Product</th><th class="r">Comm Total</th><th class="r">Comm Pend%</th><th class="r">Coop Total</th><th class="r">Coop Pend%</th><th class="r">RRB Total</th><th class="r">RRB Pend%</th></tr></thead>
+        <tbody>
+          <tr><td>AEPS</td><td class="r mono">57</td><td class="r"><span class="hc h3">86.0%</span></td><td class="r mono">29</td><td class="r"><span class="hc h1">58.6%</span></td><td class="r mono">29</td><td class="r"><span class="hc h2">79.3%</span></td></tr>
+          <tr><td>IMPS</td><td class="r mono">57</td><td class="r"><span class="hc h3">87.7%</span></td><td class="r mono">862</td><td class="r"><span class="hc h2">66.2%</span></td><td class="r mono">27</td><td class="r"><span class="hc h2">77.8%</span></td></tr>
+          <tr><td>NACH</td><td class="r mono">72</td><td class="r"><span class="hc h3">93.1%</span></td><td class="r mono">1,121</td><td class="r"><span class="hc h2">73.5%</span></td><td class="r mono">27</td><td class="r"><span class="hc h2">74.1%</span></td></tr>
+          <tr><td>NFS</td><td class="r mono">68</td><td class="r"><span class="hc h3">88.2%</span></td><td class="r mono">694</td><td class="r"><span class="hc h2">62.7%</span></td><td class="r mono">13</td><td class="r"><span class="hc h2">76.9%</span></td></tr>
+          <tr><td>RUPAY</td><td class="r mono">171</td><td class="r"><span class="hc h3">90.6%</span></td><td class="r mono">5</td><td class="r"><span class="hc h2">60.0%</span></td><td class="r mono">0</td><td class="r">—</td></tr>
+          <tr><td>UPI</td><td class="r mono">208</td><td class="r"><span class="hc h3">92.8%</span></td><td class="r mono">586</td><td class="r"><span class="hc h2">66.4%</span></td><td class="r mono">25</td><td class="r"><span class="hc h2">76.0%</span></td></tr>
+          <tr class="tot"><td><b>Total</b></td><td class="r mono">541</td><td class="r"><span class="hc h3">91.3%</span></td><td class="r mono">2,467</td><td class="r"><span class="hc h2">70.9%</span></td><td class="r mono">90</td><td class="r"><span class="hc h2">78.9%</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="panel">
+      <div class="ph"><div class="ph-ico" style="background:#F0FFFE;">👤</div><div class="ph-title">RM wise GST Pending — CCU Banks</div></div>
+      <table class="tbl">
+        <thead><tr><th>RM</th><th class="r">AEPS Pend%</th><th class="r">IMPS Pend%</th><th class="r">NFS Pend%</th><th class="r">UPI Pend%</th><th class="r">Overall</th></tr></thead>
+        <tbody>
+          <tr><td>Ameya Save</td><td class="r"><span class="hc h1">57.7%</span></td><td class="r"><span class="hc h2">67.2%</span></td><td class="r"><span class="hc h2">65.4%</span></td><td class="r"><span class="hc h2">67.4%</span></td><td class="r"><span class="hc h2">65%</span></td></tr>
+          <tr><td>Deepak Panday</td><td class="r"><span class="hc h2">66.7%</span></td><td class="r"><span class="hc h2">65.7%</span></td><td class="r"><span class="hc h1">59.9%</span></td><td class="r"><span class="hc h2">63.2%</span></td><td class="r"><span class="hc h2">64%</span></td></tr>
+          <tr><td>Divya Daiya</td><td class="r">—</td><td class="r"><span class="hc h0">50.0%</span></td><td class="r"><span class="hc h0">55.6%</span></td><td class="r"><span class="hc h0">60.0%</span></td><td class="r"><span class="hc h0">55%</span></td></tr>
+          <tr><td>Himanshu Lal</td><td class="r"><span class="hc h2">70.6%</span></td><td class="r"><span class="hc h2">77.8%</span></td><td class="r"><span class="hc h2">80.0%</span></td><td class="r"><span class="hc h2">71.4%</span></td><td class="r"><span class="hc h2">75%</span></td></tr>
+          <tr class="warn"><td>Mayur More</td><td class="r"><span class="hc h3">87.5%</span></td><td class="r"><span class="hc h2">64.5%</span></td><td class="r"><span class="hc h1">59.3%</span></td><td class="r"><span class="hc h2">67.5%</span></td><td class="r"><span class="hc h2">70%</span></td></tr>
+          <tr class="crit"><td>Pratik Lohakane</td><td class="r"><span class="hc h4">100%</span></td><td class="r"><span class="hc h2">69.1%</span></td><td class="r"><span class="hc h2">67.3%</span></td><td class="r"><span class="hc h2">69.7%</span></td><td class="r"><span class="hc h3">77%</span></td></tr>
+          <tr class="tot"><td><b>Total</b></td><td class="r"><span class="hc h2">69.0%</span></td><td class="r"><span class="hc h2">66.6%</span></td><td class="r"><span class="hc h2">62.9%</span></td><td class="r"><span class="hc h2">66.7%</span></td><td class="r"><span class="hc h2">66%</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+    <div class="panel">
+      <div class="ph"><div class="ph-ico" style="background:#F0FFFE;">👤</div><div class="ph-title">Bank wise GST Pending — CCU Banks</div></div>
+      <table class="tbl">
+        <thead><tr><th>bank</th><th class="r">AEPS Pend%</th><th class="r">IMPS Pend%</th><th class="r">NFS Pend%</th><th class="r">UPI Pend%</th><th class="r">Overall</th></tr></thead>
+        <tbody>
+          <tr><td>ABHYUDAYA CO OP BANK LTD</td><td class="r"><span class="hc h1">57.7%</span></td><td class="r"><span class="hc h2">67.2%</span></td><td class="r"><span class="hc h2">65.4%</span></td><td class="r"><span class="hc h2">67.4%</span></td><td class="r"><span class="hc h2">65%</span></td></tr>
+          <tr><td>ALLAHABAD DIST CO OP BANK</td><td class="r"><span class="hc h2">66.7%</span></td><td class="r"><span class="hc h2">65.7%</span></td><td class="r"><span class="hc h1">59.9%</span></td><td class="r"><span class="hc h2">63.2%</span></td><td class="r"><span class="hc h2">64%</span></td></tr>
+          <tr><td>ARUNA SAHAKARA BANK NIYAMITHA</td><td class="r">—</td><td class="r"><span class="hc h0">50.0%</span></td><td class="r"><span class="hc h0">55.6%</span></td><td class="r"><span class="hc h0">60.0%</span></td><td class="r"><span class="hc h0">55%</span></td></tr>
+          <tr><td>BANK OF AMERICA</td><td class="r"><span class="hc h2">70.6%</span></td><td class="r"><span class="hc h2">77.8%</span></td><td class="r"><span class="hc h2">80.0%</span></td><td class="r"><span class="hc h2">71.4%</span></td><td class="r"><span class="hc h2">75%</span></td></tr>
+          <tr class="warn"><td>APNA SAHAKARI BANK LTD</td><td class="r"><span class="hc h3">87.5%</span></td><td class="r"><span class="hc h2">64.5%</span></td><td class="r"><span class="hc h1">59.3%</span></td><td class="r"><span class="hc h2">67.5%</span></td><td class="r"><span class="hc h2">70%</span></td></tr>
+          <tr class="crit"><td>BARCLAYS BANK</td><td class="r"><span class="hc h4">100%</span></td><td class="r"><span class="hc h2">69.1%</span></td><td class="r"><span class="hc h2">67.3%</span></td><td class="r"><span class="hc h2">69.7%</span></td><td class="r"><span class="hc h3">77%</span></td></tr>
+          <tr class="tot"><td><b>Total</b></td><td class="r"><span class="hc h2">69.0%</span></td><td class="r"><span class="hc h2">66.6%</span></td><td class="r"><span class="hc h2">62.9%</span></td><td class="r"><span class="hc h2">66.7%</span></td><td class="r"><span class="hc h2">66%</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  <div class="footer"><div style="font-size:10px;color:var(--text3);">NPCI Dashboad· CCU Team · Last sync: 09:45 AM 14 Mar 2026</div></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- PAGE: PCOM -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="page-pcom" class="page">
+  <div class="pg-hdr"><div><div class="pg-title">PCOM Pending Report</div><div class="pg-sub">Product Compliance</div></div><div class="pg-ctrls"><button class="btn">⬇ Export</button></div></div>
+  <div class="g14">
+    <div class="panel">
+      <div class="ph"><div class="ph-ico" style="background:#F5F3FF;">📑</div><div class="ph-title">RM wise Pending Banks</div></div>
+      <table class="tbl">
+        <thead><tr><th>RM Name</th><th class="r">FY23-24 Total</th><th class="r">FY23-24 Pend</th><th class="r">FY24-25 Total</th><th class="r">FY24-25 Pend</th></tr></thead>
+        <tbody>
+          <tr><td>Ameya Save</td><td class="r mono">270</td><td class="r"><span class="hc h1">9</span></td><td class="r mono">271</td><td class="r"><span class="hc h2">57</span></td></tr>
+          <tr><td>Deepak Panday</td><td class="r mono">243</td><td class="r"><span class="hc h0">7</span></td><td class="r mono">242</td><td class="r"><span class="hc h2">50</span></td></tr>
+          <tr><td>Divya Daiya</td><td class="r mono">9</td><td class="r"><span class="hc h0">0</span></td><td class="r mono">9</td><td class="r"><span class="hc h0">1</span></td></tr>
+          <tr><td>Himanshu Lal</td><td class="r mono">29</td><td class="r"><span class="hc h0">0</span></td><td class="r mono">29</td><td class="r"><span class="hc h1">4</span></td></tr>
+          <tr><td>Mayur More</td><td class="r mono">215</td><td class="r"><span class="hc h0">7</span></td><td class="r mono">216</td><td class="r"><span class="hc h2">39</span></td></tr>
+          <tr><td>Pratik Lohakane</td><td class="r mono">131</td><td class="r"><span class="hc h0">4</span></td><td class="r mono">132</td><td class="r"><span class="hc h1">27</span></td></tr>
+          <tr class="tot"><td><b>Total</b></td><td class="r mono">897</td><td class="r"><span class="hc h0">27</span></td><td class="r mono">899</td><td class="r"><span class="hc h2">178</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    
+  </div>
+  <div class="panel">
+      <div class="ph"><div class="ph-ico" style="background:#EFF6FF;">🏦</div><div class="ph-title">Bank wise Pending Details</div></div>
+      <table class="tbl">
+        <thead><tr><th>Bank Name</th><th>Code</th><th>RM</th><th>Product</th><th>FY</th><th>Quarter</th><th class="r">Pending</th></tr></thead>
+        <tbody>
+          <tr><td style="font-size:10.5px;">ABHYUDAYA CO OP BANK LTD</td><td><span class="ctag">ABHY</span></td><td style="font-size:10px;">Divya Daiya</td><td>General</td><td>FY 24-25</td><td>Q1</td><td class="r mono">1</td></tr>
+          <tr><td style="font-size:10.5px;">ALLAHABAD DIST CO OP BANK</td><td><span class="ctag">ALLX</span></td><td style="font-size:10px;">Deepak P.</td><td>NACH</td><td>FY 24-25</td><td>Q4</td><td class="r mono">1</td></tr>
+          <tr><td style="font-size:10.5px;">APNA SAHAKARI BANK LTD</td><td><span class="ctag">ASBL</span></td><td style="font-size:10px;">Deepak P.</td><td>ATM</td><td>FY 24-25</td><td>Q3</td><td class="r mono">1</td></tr>
+          <tr><td style="font-size:10.5px;">ARUNA SAHAKARA BANK NIYAMITHA</td><td><span class="ctag">ARSN</span></td><td style="font-size:10px;">Ameya Save</td><td>General</td><td>FY 24-25</td><td>Q1</td><td class="r mono">7</td></tr>
+          <tr><td style="font-size:10.5px;">ARUNA SAHAKARA BANK NIYAMITHA</td><td><span class="ctag">ARSN</span></td><td style="font-size:10px;">Ameya Save</td><td>RUPAY</td><td>FY 24-25</td><td>Q1</td><td class="r mono">3</td></tr>
+          <tr><td style="font-size:10.5px;">ASHOK NAGARI SAHAKARI BANK</td><td><span class="ctag">ANSP</span></td><td style="font-size:10px;">Deepak P.</td><td>General</td><td>FY 24-25</td><td>Q1</td><td class="r mono">6</td></tr>
+          <tr><td style="font-size:10.5px;">BANK OF AMERICA</td><td><span class="ctag">BOFA</span></td><td style="font-size:10px;">Himanshu L.</td><td>General</td><td>FY 24-25</td><td>Q1</td><td class="r mono">1</td></tr>
+          <tr><td style="font-size:10.5px;">BARCLAYS BANK</td><td><span class="ctag">BARC</span></td><td style="font-size:10px;">Himanshu L.</td><td>General</td><td>FY 24-25</td><td>Q1</td><td class="r mono">1</td></tr>
+        </tbody>
+      </table>
+    </div>
+  <div class="footer"><div style="font-size:10px;color:var(--text3);">NPCI Dashboad· CCU Team · Last sync: 09:45 AM 14 Mar 2026</div></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- PAGE: ONBOARDING -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="page-onboard" class="page">
+  <div class="pg-hdr"><div><div class="pg-title">🚀 Onboarding Tracker</div><div class="pg-sub"></div></div><div class="pg-ctrls"><select class="btn"><option>FY 24-25</option><option>FY 23-24</option></select></div></div>
+  <div class="g4">
+    <div class="kpi bl"><div class="kpi-lbl">Total Onboarded</div><div class="kpi-val">899</div><div class="kpi-d up">FY 24-25</div></div>
+    <div class="kpi am"><div class="kpi-lbl">New Request</div><div class="kpi-val">178</div><div class="kpi-d dn"></div></div>
+    <div class="kpi rd"><div class="kpi-lbl">Bank Hold</div><div class="kpi-val">540</div><div class="kpi-d dn"></div></div>
+    <div class="kpi gr"><div class="kpi-lbl">NPCI Pending </div><div class="kpi-val">228</div><div class="kpi-d up"></div></div>
+  </div>
+<div class="g2">
+  <div class="panel">
+        <div class="ph"><div class="ph-ico" style="background:#EFF6FF;">📊</div><div class="ph-title">Product wise Onboarded</div></div>
+        <table class="tbl">
+          <thead><tr><th>Product</th><th class="r">FTD</th><th class="r">MTD</th></tr></thead>
+          <tbody>
+            <tr><td>UPI</td><td class="r mono">2</td><td class="r mono">271</td></tr>
+            <tr><td>IMPS</td><td class="r mono">2</td><td class="r mono">271</td></tr>
+            <tr><td>EMV</td><td class="r mono">2</td><td class="r mono">271</td></tr>
+            <tr><td>RUPAY Contactless</td><td class="r mono">2</td><td class="r mono">271</td></tr>
+            <tr><td>AEPS</td><td class="r mono">2</td><td class="r mono">271</td></tr>
+            <tr><td>Cluster-IMPS</td><td class="r mono">2</td><td class="r mono">271</td></tr>
+            <tr><td>Cluster-EMV</td><td class="r mono">2</td><td class="r mono">271</td></tr>
+            
+            <tr class="tot"><td><b>Total</b></td><td class="r mono">5</td><td class="r mono">599</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="panel">
+        <div class="ph"><div class="ph-ico" style="background:#EFF6FF;">📊</div><div class="ph-title">Product wise Pending</div></div>
+        <table class="tbl">
+          <thead><tr><th>Product</th><th class="r">0-2 Days</th><th class="r">3-5 Days</th><th class="r">6-10 Days</th><th class="r">>10 Days</th><th class="r">Total</th></tr></thead>
+          <tbody>
+            <tr><td>UPI</td><td class="r mono">271</td><td class="r"><span class="hc h2">57</span></td><td class="r mono">115</td><td class="r mono">81</td><td class="r"><span class="hc h1">79</span></td></tr>
+            <tr class="warn"><td>IMPS</td><td class="r mono">242</td><td class="r"><span class="hc h2">50</span></td><td class="r mono">98</td><td class="r mono">72</td><td class="r"><span class="hc h1">79</span></td></tr>
+            <tr><td>EMV</td><td class="r mono">216</td><td class="r"><span class="hc h2">39</span></td><td class="r mono">87</td><td class="r mono">65</td><td class="r"><span class="hc h0">82</span></td></tr>
+            <tr><td>RUPAY Contactless</td><td class="r mono">132</td><td class="r"><span class="hc h1">27</span></td><td class="r mono">54</td><td class="r mono">38</td><td class="r"><span class="hc h1">80</span></td></tr>
+            <tr><td>AEPS</td><td class="r mono">29</td><td class="r"><span class="hc h0">4</span></td><td class="r mono">12</td><td class="r mono">9</td><td class="r"><span class="hc h0">86</span></td></tr>
+            <tr><td>Cluster - IMPS</td><td class="r mono">29</td><td class="r"><span class="hc h0">4</span></td><td class="r mono">12</td><td class="r mono">9</td><td class="r"><span class="hc h0">86</span></td></tr>
+            <tr><td>Cluster - EMV</td><td class="r mono">29</td><td class="r"><span class="hc h0">4</span></td><td class="r mono">12</td><td class="r mono">9</td><td class="r"><span class="hc h0">86</span></td></tr>
+            <tr class="tot"><td><b>Total</b></td><td class="r mono">899</td><td class="r"><span class="hc h2">178</span></td><td class="r mono">366</td><td class="r mono">265</td><td class="r"><span class="hc h1">80</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+<div class="panel">
+        <div class="ph"><div class="ph-ico" style="background:#EFF6FF;">📊</div><div class="ph-title">Stage wise Pending</div></div>
+        <table class="tbl">
+          <thead><tr><th>Stage</th><th class="r">0-2 Days</th><th class="r">3-5 Days</th><th class="r">6-10 Days</th><th class="r">>10 Days</th><th class="r">Total</th></tr></thead>
+          <tbody>
+            <tr><td>Legal Approval</td><td class="r mono">271</td><td class="r"><span class="hc h2">57</span></td><td class="r mono">115</td><td class="r mono">81</td><td class="r"><span class="hc h1">79</span></td></tr>
+            <tr class="warn"><td>Production Movement</td><td class="r mono">242</td><td class="r"><span class="hc h2">50</span></td><td class="r mono">98</td><td class="r mono">72</td><td class="r"><span class="hc h1">79</span></td></tr>
+            <tr><td>Infosec Approval</td><td class="r mono">216</td><td class="r"><span class="hc h2">39</span></td><td class="r mono">87</td><td class="r mono">65</td><td class="r"><span class="hc h0">82</span></td></tr>
+            <tr><td>Production Key Confirmation</td><td class="r mono">132</td><td class="r"><span class="hc h1">27</span></td><td class="r mono">54</td><td class="r mono">38</td><td class="r"><span class="hc h1">80</span></td></tr>
+            <tr><td>DMS Operation</td><td class="r mono">29</td><td class="r"><span class="hc h0">4</span></td><td class="r mono">12</td><td class="r mono">9</td><td class="r"><span class="hc h0">86</span></td></tr>
+            <tr><td>Bank On Hold Review</td><td class="r mono">29</td><td class="r"><span class="hc h0">4</span></td><td class="r mono">12</td><td class="r mono">9</td><td class="r"><span class="hc h0">86</span></td></tr>
+            <tr><td>Requirement Verification</td><td class="r mono">29</td><td class="r"><span class="hc h0">4</span></td><td class="r mono">12</td><td class="r mono">9</td><td class="r"><span class="hc h0">86</span></td></tr>
+            <tr class="tot"><td><b>Total</b></td><td class="r mono">899</td><td class="r"><span class="hc h2">178</span></td><td class="r mono">366</td><td class="r mono">265</td><td class="r"><span class="hc h1">80</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+  <div class="panel">
+        <div class="ph"><div class="ph-ico" style="background:#EFF6FF;">📊</div><div class="ph-title">Critical Cases Pending</div></div>
+        <table class="tbl">
+          <thead><tr><th>Bank Name</th><th class="r">Product</th><th class="r">ID</th><th class="r">Current Stage</th><th class="r">Currently Pending with</th><th class="r">Days Since Initiated</th><th class="r">RM Name</th></tr></thead>
+          <tbody>
+            <tr><td>ABC</td><td class="r mono">AEPS</td><td class="r"><span class="hc h2">57</span></td><td class="r mono">Infosec Approval</td><td class="r mono">Infosec Team</td><td class="r"><span class="hc h1">79</span></td></tr>
+            <tr class="warn"><td>DEF</td><td class="r mono">UPI</td><td class="r"><span class="hc h2">50</span></td><td class="r mono">DMS Operation</td><td class="r mono">UPI Operations</td><td class="r"><span class="hc h1">79</span></td></tr>
+            <tr><td>GHY</td><td class="r mono">UPI</td><td class="r"><span class="hc h2">39</span></td><td class="r mono">DMS Operation</td><td class="r mono">UPI Operations</td><td class="r"><span class="hc h0">82</span></td></tr>
+            <tr><td>XYZ</td><td class="r mono">EMV</td><td class="r"><span class="hc h1">27</span></td><td class="r mono">Infosec Approval</td><td class="r mono">Infosec Team</td><td class="r"><span class="hc h1">80</span></td></tr>
+            </tbody>
+        </table>
+      </div>    
+
+      
+  <div class="g2">
+    
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      
+  </div>
+  <div class="footer"><div style="font-size:10px;color:var(--text3);">NPCI Dashboad· CCU Team · Last sync: 09:45 AM 14 Mar 2026</div></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- PAGE: MONTHLY -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="page-monthly" class="page">
+  <div class="pg-hdr"><div><div class="pg-title">Monthly & Weekly Analysis</div><div class="pg-sub">Trend analysis · Product performance · RM benchmarking</div></div><div class="pg-ctrls"><select class="btn"><option>UPI</option><option>FY 23-24</option></select><select class="btn"><option>FY 24-25</option><option>FY 23-24</option></select><button class="btn">⬇ Export</button></div></div>
+  <div class="g2">
+    <div class="panel">
+      <div class="ph"><div class="ph-ico" style="background:#EFF6FF;">📈</div><div class="ph-title">Monthly Approval Rate Trend — All Products</div></div>
+      <div class="pb">
+        <div class="trow"><div class="tlbl">Oct 2025</div><div class="ttrack"><div class="tbar" style="width:82%;background:#BFDBFE;"></div></div><div class="tval" style="color:var(--blue);">82.1%</div></div>
+        <div class="trow"><div class="tlbl">Nov 2025</div><div class="ttrack"><div class="tbar" style="width:85%;background:#93C5FD;"></div></div><div class="tval" style="color:var(--blue);">85.3%</div></div>
+        <div class="trow"><div class="tlbl">Dec 2025</div><div class="ttrack"><div class="tbar" style="width:88%;background:#60A5FA;"></div></div><div class="tval" style="color:var(--blue);">88.0%</div></div>
+        <div class="trow"><div class="tlbl">Jan 2026</div><div class="ttrack"><div class="tbar" style="width:87.4%;background:#3B82F6;"></div></div><div class="tval" style="color:var(--blue);">87.4%</div></div>
+        <div class="trow"><div class="tlbl">Feb 2026</div><div class="ttrack"><div class="tbar" style="width:86.2%;background:#2563EB;"></div></div><div class="tval" style="color:var(--blue);">86.2%</div></div>
+        <div class="trow"><div class="tlbl">Mar 2026 MTD</div><div class="ttrack"><div class="tbar" style="width:86.49%;background:#1D4ED8;"></div></div><div class="tval" style="color:var(--blue);">86.5%</div></div>
+        <div style="margin-top:10px;padding:8px;background:#FFF5F5;border-radius:6px;font-size:10.5px;color:#991B1B;">⚠ Declining from Dec peak (88%). AEPS driving downward pressure. Target: return to 88%+ by Apr 2026.</div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="ph"><div class="ph-ico" style="background:#FFF7ED;">📉</div><div class="ph-title">Monthly BD % Trend</div></div>
+      <div class="pb">
+        <div class="trow"><div class="tlbl">Oct 2025</div><div class="ttrack"><div class="tbar" style="width:60%;background:#A7F3D0;"></div></div><div class="tval" style="color:var(--green);">1.20%</div></div>
+        <div class="trow"><div class="tlbl">Nov 2025</div><div class="ttrack"><div class="tbar" style="width:65%;background:#6EE7B7;"></div></div><div class="tval" style="color:var(--green);">1.30%</div></div>
+        <div class="trow"><div class="tlbl">Dec 2025</div><div class="ttrack"><div class="tbar" style="width:70%;background:#34D399;"></div></div><div class="tval" style="color:var(--amber);">1.40%</div></div>
+        <div class="trow"><div class="tlbl">Jan 2026</div><div class="ttrack"><div class="tbar" style="width:80%;background:#FBBF24;"></div></div><div class="tval" style="color:var(--amber);">1.60%</div></div>
+        <div class="trow"><div class="tlbl">Feb 2026</div><div class="ttrack"><div class="tbar" style="width:86%;background:#F59E0B;"></div></div><div class="tval" style="color:var(--amber);">1.72%</div></div>
+        <div class="trow"><div class="tlbl">Mar 2026 MTD</div><div class="ttrack"><div class="tbar" style="width:89%;background:#EF4444;"></div></div><div class="tval" style="color:var(--red);">1.78%</div></div>
+        <div style="margin-top:10px;padding:8px;background:#FFF5F5;border-radius:6px;font-size:10.5px;color:#991B1B;">⚠ BD rising consistently 6 months. AEPS BD at 10.55% is primary driver. Root cause analysis needed urgently.</div>
+      </div>
+    </div>
+  </div>
+  <div class="g2">
+    <div class="panel">
+      <div class="ph"><div class="ph-ico" style="background:#F0FDF4;">📊</div><div class="ph-title">RM Monthly Volume Comparison</div></div>
+      <table class="tbl">
+        <thead><tr><th>RM Name</th><th class="r">Jan 2026</th><th class="r">Feb 2026</th><th class="r">Mar MTD</th><th class="r">MoM Δ</th><th class="r">Trend</th></tr></thead>
+        <tbody>
+          <tr><td>Ameya Save</td><td class="r mono">4.1M</td><td class="r mono">4.3M</td><td class="r mono">4.5M</td><td class="r" style="color:var(--green);">+4.7%</td><td class="r">📈</td></tr>
+          <tr><td>Deepak Panday</td><td class="r mono">3.8M</td><td class="r mono">3.6M</td><td class="r mono">3.7M</td><td class="r" style="color:var(--green);">+2.8%</td><td class="r">📈</td></tr>
+          <tr><td>Himanshu Lal</td><td class="r mono">2.1M</td><td class="r mono">2.0M</td><td class="r mono">2.2M</td><td class="r" style="color:var(--green);">+10%</td><td class="r">📈</td></tr>
+          <tr><td>Mayur More</td><td class="r mono">3.5M</td><td class="r mono">3.4M</td><td class="r mono">3.5M</td><td class="r" style="color:var(--green);">+2.9%</td><td class="r">📈</td></tr>
+          <tr><td>Pratik Lohakane</td><td class="r mono">2.8M</td><td class="r mono">2.7M</td><td class="r mono">2.9M</td><td class="r" style="color:var(--green);">+7.4%</td><td class="r">📈</td></tr>
+          <tr><td>Divya Daiya</td><td class="r mono">0.3M</td><td class="r mono">0.4M</td><td class="r mono">0.4M</td><td class="r" style="color:var(--green);">+0%</td><td class="r">➡</td></tr>
+          <tr class="tot"><td><b>Total</b></td><td class="r mono">16.6M</td><td class="r mono">16.4M</td><td class="r mono">19.2M</td><td class="r" style="color:var(--green);"><b>+3.2%</b></td><td class="r">📈</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="panel">
+      <div class="ph"><div class="ph-ico" style="background:#F5F3FF;">📅</div><div class="ph-title">Weekly Volume Snapshot — Mar 2026</div></div>
+      <table class="tbl">
+        <thead><tr><th>Week</th><th class="r">Volume</th><th class="r">Approved</th><th class="r">Appr %</th><th class="r">BD %</th><th class="r">TD %</th></tr></thead>
+        <tbody>
+          <tr><td>03–07 Mar</td><td class="r mono">4.1M</td><td class="r mono">3.6M</td><td class="r"><span class="hc h1">87.8%</span></td><td class="r">1.6%</td><td class="r">2.8%</td></tr>
+          <tr><td>08–12 Mar</td><td class="r mono">4.4M</td><td class="r mono">3.8M</td><td class="r"><span class="hc h1">86.4%</span></td><td class="r">1.8%</td><td class="r">3.0%</td></tr>
+          <tr><td>13 Mar (FTD)</td><td class="r mono">945</td><td class="r mono">821</td><td class="r"><span class="hc h1">86.9%</span></td><td class="r">1.7%</td><td class="r">2.9%</td></tr>
+          <tr class="tot"><td><b>MTD Total</b></td><td class="r mono">19.2M</td><td class="r mono">16.6M</td><td class="r"><span class="hc h1">86.5%</span></td><td class="r">1.78%</td><td class="r">3.01%</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="panel">
+      <div class="ph"><div class="ph-ico" style="background:#F0FDF4;">📊</div><div class="ph-title">Monthly Volume Analysis</div></div>
+      <table class="tbl">
+        <thead><tr><th>Month</th><th class="r">Approved Volume</th><th class="r">Approved Value</th><th class="r">MoM Δ</th></tr></thead>
+        <tbody>
+          <tr><td>April 2026</td><td class="r mono">4.1M</td><td class="r mono">4.3M</td><td class="r" style="color:var(--green);">+4.7%</td></tr>
+          <tr><td>May 2026</td><td class="r mono">3.8M</td><td class="r mono">3.6M</td><td class="r" style="color:var(--green);">+2.8%</td></tr>
+          <tr><td>June 2026</td><td class="r mono">2.1M</td><td class="r mono">2.0M</td><td class="r" style="color:var(--green);">+10%</td></tr>
+          <tr><td>July 2026</td><td class="r mono">3.5M</td><td class="r mono">3.4M</td><td class="r" style="color:var(--green);">+2.9%</td></tr>
+          <tr><td>August 2026</td><td class="r mono">2.8M</td><td class="r mono">2.7M</td><td class="r" style="color:var(--green);">+7.4%</td></tr>
+          <tr><td>Septembet 2026</td><td class="r mono">0.3M</td><td class="r mono">0.4M</td><td class="r" style="color:var(--green);">+0%</td></tr>
+          <tr><td>Octomber 2026</td><td class="r mono">0.3M</td><td class="r mono">0.4M</td><td class="r" style="color:var(--green);">+0%</td></tr>
+          <tr><td>November 2026</td><td class="r mono">0.3M</td><td class="r mono">0.4M</td><td class="r" style="color:var(--green);">+0%</td></tr>
+          <tr><td>December 2026</td><td class="r mono">0.3M</td><td class="r mono">0.4M</td><td class="r" style="color:var(--green);">+0%</td></tr>
+          <tr><td>January 2027</td><td class="r mono">0.3M</td><td class="r mono">0.4M</td><td class="r" style="color:var(--green);">+0%</td></tr>
+          <tr class="tot"><td><b>Total</b></td><td class="r mono">16.6M</td><td class="r mono">16.4M</td><td class="r" style="color:var(--green);"><b>+3.2%</b></td></tr>
+        </tbody>
+      </table>
+     </div>
+    <div class="panel">
+       <div class="ph"><div class="ph-ico" style="background:#F0FDF4;">📊</div><div class="ph-title">Monthly CB & Deemed Analysis</div></div>
+        <table class="tbl">
+        <thead><tr><th>Month</th><th class="r">CB Volume</th><th class="r">CB Value</th><th class="r">Deemed Volume</th><th class="r">Deemed Value</th><th class="r">Deemed %</th><th class="r">MoM Δ</th></tr></thead>
+        <tbody>
+          <tr><td>April 2026</td><td class="r mono">4.1M</td><td class="r mono">4.3M</td><td class="r mono">4.1M</td><td class="r mono">4.3M</td><td class="r mono">0.3%</td><td class="r" style="color:var(--green);">+4.7%</td></tr>
+          <tr><td>May 2026</td><td class="r mono">3.8M</td><td class="r mono">3.6M</td><td class="r mono">4.1M</td><td class="r mono">4.3M</td><td class="r mono">0.3%</td><td class="r" style="color:var(--green);">+2.8%</td></tr>
+          <tr><td>June 2026</td><td class="r mono">2.1M</td><td class="r mono">2.0M</td><td class="r mono">4.1M</td><td class="r mono">4.3M</td><td class="r mono">0.3%</td><td class="r" style="color:var(--green);">+10%</td></tr>
+          <tr><td>July 2026</td><td class="r mono">3.5M</td><td class="r mono">3.4M</td><td class="r mono">4.1M</td><td class="r mono">4.3M</td><td class="r mono">0.3%</td><td class="r" style="color:var(--green);">+2.9%</td></tr>
+          <tr><td>August 2026</td><td class="r mono">2.8M</td><td class="r mono">2.7M</td><td class="r mono">4.1M</td><td class="r mono">4.3M</td><td class="r mono">0.3%</td><td class="r" style="color:var(--green);">+7.4%</td></tr>
+          <tr><td>Septembet 2026</td><td class="r mono">0.3M</td><td class="r mono">0.4M</td><td class="r mono">4.1M</td><td class="r mono">4.3M</td><td class="r mono">0.3%</td><td class="r" style="color:var(--green);">+0%</td></tr>
+          <tr><td>Octomber 2026</td><td class="r mono">0.3M</td><td class="r mono">0.4M</td><td class="r mono">4.1M</td><td class="r mono">4.3M</td><td class="r mono">0.3%</td><td class="r" style="color:var(--green);">+0%</td></tr>
+          <tr><td>November 2026</td><td class="r mono">0.3M</td><td class="r mono">0.4M</td><td class="r mono">4.1M</td><td class="r mono">4.3M</td><td class="r mono">0.3%</td><td class="r" style="color:var(--green);">+0%</td></tr>
+          <tr><td>December 2026</td><td class="r mono">0.3M</td><td class="r mono">0.4M</td><td class="r mono">4.1M</td><td class="r mono">4.3M</td><td class="r mono">0.3%</td><td class="r" style="color:var(--green);">+0%</td></tr>
+          <tr><td>January 2027</td><td class="r mono">0.3M</td><td class="r mono">0.4M</td><td class="r mono">4.1M</td><td class="r mono">4.3M</td><td class="r mono">0.3%</td><td class="r" style="color:var(--green);">+0%</td></tr>
+          <tr class="tot"><td><b>Total</b></td><td class="r mono">16.6M</td><td class="r mono">16.4M</td><td class="r mono">4.1M</td><td class="r mono">4.3M</td><td class="r mono">0.3%</td><td class="r" style="color:var(--green);"><b>+3.2%</b></td></tr>
+        </tbody>
+      </table>
+    </div>
+    </div>
+  
+  
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- PAGE: DEFAULTER WATCH -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="page-defaulter" class="page">
+  <div class="pg-hdr"><div><div class="pg-title">⚠️ Defaulter Watch</div><div class="pg-sub">Banks requiring immediate action — zero approval, high BD/TD, continuous deemed</div></div><div class="pg-ctrls"><button class="btn pri" onclick="openModal('alertModal')">📩 Send Alerts</button></div></div>
+  <div class="g3">
+    <div class="kpi rd"><div class="kpi-lbl">Zero Approval Banks</div><div class="kpi-val">74</div><div class="kpi-d dn">All products</div></div>
+    <div class="kpi am"><div class="kpi-lbl">High BD (&gt;5%)</div><div class="kpi-val">284</div><div class="kpi-d dn">Banks affected</div></div>
+    <div class="kpi am"><div class="kpi-lbl">3-Month Deemed</div><div class="kpi-val">2</div><div class="kpi-d dn">BMC, BVN</div></div>
+  </div>
+  <div class="panel">
+    <div class="ph"><div class="ph-ico" style="background:#FEF2F2;">🚨</div><div class="ph-title">Critical Defaulter List — Immediate Escalation Required</div><div class="ph-r"><span class="bdg r">7 Active Alerts</span></div></div>
+    <table class="tbl">
+      <thead><tr><th>Priority</th><th>Bank Name / Issue</th><th>Code</th><th>Product</th><th>RM</th><th>Alert Type</th><th class="r">Duration</th><th class="r">Action</th></tr></thead>
+      <tbody>
+        <tr class="crit"><td><span class="hc h4">P1</span></td><td class="bname" style="font-size:10.5px;">BOMBAY MERCANTILE CO OP BANK</td><td><span class="ctag">BMC</span></td><td>IMPS</td><td style="font-size:10px;">Deepak Panday</td><td><span class="bdg r">3-Month Deemed</span></td><td class="r"><span class="hc h4">3+ Mo</span></td><td class="r"><button class="btn" style="padding:2px 7px;font-size:10px;" onclick="openModal('escModal')">Escalate</button></td></tr>
+        <tr class="crit"><td><span class="hc h4">P1</span></td><td class="bname" style="font-size:10.5px;">BHAVNAGAR DISTRICT CO OP BANK</td><td><span class="ctag">BVN</span></td><td>IMPS</td><td style="font-size:10px;">Mayur More</td><td><span class="bdg r">3-Month Deemed</span></td><td class="r"><span class="hc h4">3+ Mo</span></td><td class="r"><button class="btn" style="padding:2px 7px;font-size:10px;" onclick="openModal('escModal')">Escalate</button></td></tr>
+        <tr class="crit"><td><span class="hc h3">P1</span></td><td class="bname" style="font-size:10.5px;">NFS — 28 Banks Zero Approval</td><td>—</td><td>NFS</td><td style="font-size:10px;">Multiple RMs</td><td><span class="bdg r">Zero Approval</span></td><td class="r">FTD</td><td class="r"><button class="btn" style="padding:2px 7px;font-size:10px;">Review</button></td></tr>
+        <tr class="warn"><td><span class="hc h2">P2</span></td><td class="bname" style="font-size:10.5px;">AEPS — 13 Banks Zero Approval</td><td>—</td><td>AEPS</td><td style="font-size:10px;">Multiple RMs</td><td><span class="bdg a">Zero Approval</span></td><td class="r">FTD</td><td class="r"><button class="btn" style="padding:2px 7px;font-size:10px;">Review</button></td></tr>
+        <tr class="warn"><td><span class="hc h2">P2</span></td><td class="bname" style="font-size:10.5px;">UPI — 6 Banks Zero Approval</td><td>—</td><td>UPI</td><td style="font-size:10px;">Multiple RMs</td><td><span class="bdg a">Zero Approval</span></td><td class="r">FTD</td><td class="r"><button class="btn" style="padding:2px 7px;font-size:10px;">Review</button></td></tr>
+        <tr class="warn"><td><span class="hc h1">P3</span></td><td class="bname" style="font-size:10.5px;">AEPS Product — BD 10.55% (Target &lt;5%)</td><td>—</td><td>AEPS</td><td style="font-size:10px;">All RMs</td><td><span class="bdg a">High BD</span></td><td class="r">MTD</td><td class="r"><button class="btn" style="padding:2px 7px;font-size:10px;">Analyse</button></td></tr>
+        <tr class="warn"><td><span class="hc h1">P3</span></td><td class="bname" style="font-size:10.5px;">AEPS Product — TD 13.36% (Target &lt;2%)</td><td>—</td><td>AEPS</td><td style="font-size:10px;">All RMs</td><td><span class="bdg a">High TD</span></td><td class="r">MTD</td><td class="r"><button class="btn" style="padding:2px 7px;font-size:10px;">Analyse</button></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="icard r">
+    <div class="ititle">🔴 NPCI Compliance Risk: Continuous 3-Month Deemed Banks (BMC & BVN)</div>
+    <div class="itext">Banks with 3+ consecutive months of deemed transactions are subject to NPCI review and potential suspension. Immediate escalation to bank management required for BMC (Deepak Panday) and BVN (Mayur More). Prepare remediation plan with 30-day resolution timeline. If unresolved, escalate to NPCI with corrective action plan by 21 Mar 2026.</div>
+  </div>
+  <div class="footer"><div style="font-size:10px;color:var(--text3);">NPCI Dashboad· CCU Team · Last sync: 09:45 AM 14 Mar 2026</div></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- PAGE: ASP/VENDOR -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="page-asp" class="page">
+  <div class="pg-hdr"><div><div class="pg-title">ASP / Vendor View</div><div class="pg-sub">Application Service Provider performance</div></div></div>
+  <div class="g2">
+    <div class="panel">
+      <div class="ph"><div class="ph-ico" style="background:#EFF6FF;">🏪</div><div class="ph-title">ASP wise Deemed — FTD</div></div>
+      <table class="tbl">
+        <thead><tr><th>ASP Name</th><th class="r">Deemed Vol</th><th class="r">Deemed Value (₹)</th><th class="r">Status</th></tr></thead>
+        <tbody>
+          <tr><td class="bname">C Edge Technologies Pvt Ltd</td><td class="r mono">6</td><td class="r mono">15,999</td><td class="r"><span class="bdg a">Watch</span></td></tr>
+          <tr><td class="bname">Euronet Services India Pvt Ltd</td><td class="r mono">1</td><td class="r mono">500</td><td class="r"><span class="bdg g">OK</span></td></tr>
+          <tr><td class="bname">Sarvatra Technologies Pvt Ltd</td><td class="r mono">5</td><td class="r mono">1,32,050</td><td class="r"><span class="bdg r">Alert</span></td></tr>
+          <tr class="tot"><td><b>Total</b></td><td class="r mono">12</td><td class="r mono">1,48,549</td><td class="r"></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="panel">
+      <div class="ph"><div class="ph-ico" style="background:#FFF7ED;">📊</div><div class="ph-title">ASP wise Monthly Performance</div></div>
+      <table class="tbl">
+        <thead><tr><th>ASP</th><th class="r">Jan Deemed%</th><th class="r">Feb Deemed%</th><th class="r">Mar MTD%</th><th class="r">Trend</th></tr></thead>
+        <tbody>
+          <tr><td>C Edge Technologies</td><td class="r"><span class="hc h0">0.12%</span></td><td class="r"><span class="hc h1">0.28%</span></td><td class="r"><span class="hc h1">0.35%</span></td><td class="r" style="color:var(--red);">↑ Rising</td></tr>
+          <tr><td>Euronet Services</td><td class="r"><span class="hc h0">0.05%</span></td><td class="r"><span class="hc h0">0.04%</span></td><td class="r"><span class="hc h0">0.03%</span></td><td class="r" style="color:var(--green);">↓ Good</td></tr>
+          <tr><td>Sarvatra Technologies</td><td class="r"><span class="hc h1">0.40%</span></td><td class="r"><span class="hc h2">0.62%</span></td><td class="r"><span class="hc h2">0.78%</span></td><td class="r" style="color:var(--red);">↑ Alert</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="footer"><div style="font-size:10px;color:var(--text3);">NPCI Dashboad· CCU Team · Last sync: 09:45 AM 14 Mar 2026</div></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- PAGE: BANK Data -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="page-bankmaster" class="page">
+  <div class="pg-hdr"><div><div class="pg-title">Bank Data — Data View</div><div class="pg-sub"></div></div><div class="pg-ctrls"><select class="btn"><option>DCCB</option><option>RRB</option><option>State Coop</option></select><select class="btn"><option>Maharashta</option><option>Karnataka</option><option>Gujarat</option></select><select class="btn"><option>UPI</option><option>IMPS</option><option>NFS</option></select><select class="btn"><option>Jan 2026</option><option>Feb 2026</option><option>Mar 2026</option></select><button class="btn">⬇ Export</button></div></div>
+  <div class="panel">
+    <div class="ph"><div class="ph-ico" style="background:#EFF6FF;">🏦</div><div class="ph-title">Bank wise TD/BD Data — UPI · Jan 2026</div><div class="ph-r"><div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text2);"></div></div></div>
+    <table class="tbl">
+      <thead><tr><th>Month</th><th>Bank Name</th><th>Prod</th><th>Code</th><th class="r">Approved Vol</th><th class="r">BD BI Value</th><th class="r">BD CI Vol</th><th class="r">TD Vol Val</th><th class="r">Total</th><th class="r">Status</th></tr></thead>
+      <tbody>
+        <tr><td>Jan 26</td><td style="font-size:10.5px;">ABHINANDAN URBAN CO OP BANK AMRAVATI</td><td>UPI</td><td><span class="ctag">ABH</span></td><td class="r mono">0</td><td class="r mono">0</td><td class="r mono">0</td><td class="r mono">0</td><td class="r"><span class="hc h0">0.00%</span></td><td class="r"><span class="bdg g">Good</span></td></tr>
+        <tr><td>Jan 26</td><td style="font-size:10.5px;">ABHYUDAYA CO OP BANK LTD</td><td>UPI</td><td><span class="ctag">ACB</span></td><td class="r mono">183</td><td class="r mono">12,72,109</td><td class="r mono">0</td><td class="r mono">0</td><td class="r"><span class="hc h0">0.00%</span></td><td class="r"><span class="bdg g">Good</span></td></tr>
+        <tr><td>Jan 26</td><td style="font-size:10.5px;">ACE CO OP BANK LTD</td><td>UPI</td><td><span class="ctag">ACE</span></td><td class="r mono">0</td><td class="r mono">0</td><td class="r mono">0</td><td class="r mono">0</td><td class="r"><span class="hc h0">0.00%</span></td><td class="r"><span class="bdg g">Good</span></td></tr>
+        <tr><td>Jan 26</td><td style="font-size:10.5px;">ADARSH CO OP BANK LTD</td><td>UPI</td><td><span class="ctag">ADB</span></td><td class="r mono">7</td><td class="r mono">1,10,140</td><td class="r mono">0</td><td class="r mono">0</td><td class="r"><span class="hc h0">0.00%</span></td><td class="r"><span class="bdg g">Good</span></td></tr>
+        <tr class="warn"><td>Jan 26</td><td style="font-size:10.5px;">AGROHA CO OP URBAN BANK LIMITED</td><td>UPI</td><td><span class="ctag">AGB</span></td><td class="r mono">1</td><td class="r mono">1,000</td><td class="r mono">1</td><td class="r mono">1,000</td><td class="r"><span class="hc h4">100.00%</span></td><td class="r"><span class="bdg r">Critical</span></td></tr>
+        <tr><td>Jan 26</td><td style="font-size:10.5px;">AHMEDNAGAR SHAHAR SAHAKARI BANK</td><td>UPI</td><td><span class="ctag">AHS</span></td><td class="r mono">4</td><td class="r mono">68,178</td><td class="r mono">0</td><td class="r mono">0</td><td class="r"><span class="hc h0">0.00%</span></td><td class="r"><span class="bdg g">Good</span></td></tr>
+        <tr><td>Jan 26</td><td style="font-size:10.5px;">AMBAJOGAI PEOPLES CO OP BANK MYDT</td><td>UPI</td><td><span class="ctag">AMB</span></td><td class="r mono">13</td><td class="r mono">89,084</td><td class="r mono">0</td><td class="r mono">0</td><td class="r"><span class="hc h0">0.00%</span></td><td class="r"><span class="bdg g">Good</span></td></tr>
+        <tr><td>Jan 26</td><td style="font-size:10.5px;">AMBARNATH JAI HIND CO OP BANK</td><td>UPI</td><td><span class="ctag">AJC</span></td><td class="r mono">11</td><td class="r mono">68,680</td><td class="r mono">0</td><td class="r mono">0</td><td class="r"><span class="hc h0">0.00%</span></td><td class="r"><span class="bdg g">Good</span></td></tr>
+        <tr><td>Jan 26</td><td style="font-size:10.5px;">AMRELI JILLA MADHYASTHA SAHAKARI BANK</td><td>UPI</td><td><span class="ctag">AJM</span></td><td class="r mono">7</td><td class="r mono">31,400</td><td class="r mono">0</td><td class="r mono">0</td><td class="r"><span class="hc h0">0.00%</span></td><td class="r"><span class="bdg g">Good</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="panel">
+    <div class="ph"><div class="ph-ico" style="background:#EFF6FF;">🏦</div><div class="ph-title">Bank wise CB / Deemed Data — UPI · Jan 2026</div><div class="ph-r"><div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text2);">23 Unique Banks · 17K CB Vol · 113M CB Value · 0.23% Deemed</div></div></div>
+    <table class="tbl">
+      <thead><tr><th>Month</th><th>Bank Name</th><th>Prod</th><th>Code</th><th class="r">CB Vol</th><th class="r">CB Value</th><th class="r">Deemed Vol</th><th class="r">Deemed Val</th><th class="r">Deemed %</th><th class="r">Status</th></tr></thead>
+      <tbody>
+        <tr><td>Jan 26</td><td style="font-size:10.5px;">ABHINANDAN URBAN CO OP BANK AMRAVATI</td><td>UPI</td><td><span class="ctag">ABH</span></td><td class="r mono">0</td><td class="r mono">0</td><td class="r mono">0</td><td class="r mono">0</td><td class="r"><span class="hc h0">0.00%</span></td><td class="r"><span class="bdg g">Good</span></td></tr>
+        <tr><td>Jan 26</td><td style="font-size:10.5px;">ABHYUDAYA CO OP BANK LTD</td><td>UPI</td><td><span class="ctag">ACB</span></td><td class="r mono">183</td><td class="r mono">12,72,109</td><td class="r mono">0</td><td class="r mono">0</td><td class="r"><span class="hc h0">0.00%</span></td><td class="r"><span class="bdg g">Good</span></td></tr>
+        <tr><td>Jan 26</td><td style="font-size:10.5px;">ACE CO OP BANK LTD</td><td>UPI</td><td><span class="ctag">ACE</span></td><td class="r mono">0</td><td class="r mono">0</td><td class="r mono">0</td><td class="r mono">0</td><td class="r"><span class="hc h0">0.00%</span></td><td class="r"><span class="bdg g">Good</span></td></tr>
+        <tr><td>Jan 26</td><td style="font-size:10.5px;">ADARSH CO OP BANK LTD</td><td>UPI</td><td><span class="ctag">ADB</span></td><td class="r mono">7</td><td class="r mono">1,10,140</td><td class="r mono">0</td><td class="r mono">0</td><td class="r"><span class="hc h0">0.00%</span></td><td class="r"><span class="bdg g">Good</span></td></tr>
+        <tr class="warn"><td>Jan 26</td><td style="font-size:10.5px;">AGROHA CO OP URBAN BANK LIMITED</td><td>UPI</td><td><span class="ctag">AGB</span></td><td class="r mono">1</td><td class="r mono">1,000</td><td class="r mono">1</td><td class="r mono">1,000</td><td class="r"><span class="hc h4">100.00%</span></td><td class="r"><span class="bdg r">Critical</span></td></tr>
+        <tr><td>Jan 26</td><td style="font-size:10.5px;">AHMEDNAGAR SHAHAR SAHAKARI BANK</td><td>UPI</td><td><span class="ctag">AHS</span></td><td class="r mono">4</td><td class="r mono">68,178</td><td class="r mono">0</td><td class="r mono">0</td><td class="r"><span class="hc h0">0.00%</span></td><td class="r"><span class="bdg g">Good</span></td></tr>
+        <tr><td>Jan 26</td><td style="font-size:10.5px;">AMBAJOGAI PEOPLES CO OP BANK MYDT</td><td>UPI</td><td><span class="ctag">AMB</span></td><td class="r mono">13</td><td class="r mono">89,084</td><td class="r mono">0</td><td class="r mono">0</td><td class="r"><span class="hc h0">0.00%</span></td><td class="r"><span class="bdg g">Good</span></td></tr>
+        <tr><td>Jan 26</td><td style="font-size:10.5px;">AMBARNATH JAI HIND CO OP BANK</td><td>UPI</td><td><span class="ctag">AJC</span></td><td class="r mono">11</td><td class="r mono">68,680</td><td class="r mono">0</td><td class="r mono">0</td><td class="r"><span class="hc h0">0.00%</span></td><td class="r"><span class="bdg g">Good</span></td></tr>
+        <tr><td>Jan 26</td><td style="font-size:10.5px;">AMRELI JILLA MADHYASTHA SAHAKARI BANK</td><td>UPI</td><td><span class="ctag">AJM</span></td><td class="r mono">7</td><td class="r mono">31,400</td><td class="r mono">0</td><td class="r mono">0</td><td class="r"><span class="hc h0">0.00%</span></td><td class="r"><span class="bdg g">Good</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+   <div class="panel">
+    <div class="ph"><div class="ph-ico" style="background:#EFF6FF;">🏦</div><div class="ph-title">Bank wise GST Data</div><div class="ph-r"><div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text2);"></div></div></div>
+    <table class="tbl">
+      <thead><tr><th>Month</th><th>Bank Name</th><th>Prod</th><th>Code</th><th class="r">Rm Name</th><th class="r">Total Invoices</th><th class="r">Completed Invoices</th><th class="r">Pending Invoices</th><th class="r">Pending %</th><th class="r">Status</th></tr></thead>
+      <tbody>
+        <tr><td>Jan 26</td><td style="font-size:10.5px;">ABHINANDAN URBAN CO OP BANK AMRAVATI</td><td>UPI</td><td><span class="ctag">ABH</span></td><td class="r mono">Ameya</td><td class="r mono">0</td><td class="r mono">0</td><td class="r mono">0</td><td class="r"><span class="hc h0">0.00%</span></td><td class="r"><span class="bdg g">Good</span></td></tr>
+        <tr><td>Jan 26</td><td style="font-size:10.5px;">ABHYUDAYA CO OP BANK LTD</td><td>UPI</td><td><span class="ctag">ACB</span></td><td class="r mono">Ameya</td><td class="r mono">1272</td><td class="r mono">1272</td><td class="r mono">0</td><td class="r"><span class="hc h0">0.00%</span></td><td class="r"><span class="bdg g">Good</span></td></tr>
+        <tr><td>Jan 26</td><td style="font-size:10.5px;">ACE CO OP BANK LTD</td><td>UPI</td><td><span class="ctag">ACE</span></td><td class="r mono">Pratik</td><td class="r mono">0</td><td class="r mono">0</td><td class="r mono">0</td><td class="r"><span class="hc h0">0.00%</span></td><td class="r"><span class="bdg g">Good</span></td></tr>
+        <tr><td>Jan 26</td><td style="font-size:10.5px;">ADARSH CO OP BANK LTD</td><td>UPI</td><td><span class="ctag">ADB</span></td><td class="r mono">Deepak</td><td class="r mono">110</td><td class="r mono">110</td><td class="r mono">0</td><td class="r"><span class="hc h0">0.00%</span></td><td class="r"><span class="bdg g">Good</span></td></tr>
+        <tr class="warn"><td>Jan 26</td><td style="font-size:10.5px;">AGROHA CO OP URBAN BANK LIMITED</td><td>UPI</td><td><span class="ctag">AGB</span></td><td class="r mono">Deepak</td><td class="r mono">1,000</td><td class="r mono">0</td><td class="r mono">1,000</td><td class="r"><span class="hc h4">100.00%</span></td><td class="r"><span class="bdg r">Critical</span></td></tr>
+        <tr><td>Jan 26</td><td style="font-size:10.5px;">AHMEDNAGAR SHAHAR SAHAKARI BANK</td><td>UPI</td><td><span class="ctag">AHS</span></td><td class="r mono">Divya</td><td class="r mono">68</td><td class="r mono">68</td><td class="r mono">0</td><td class="r"><span class="hc h0">0.00%</span></td><td class="r"><span class="bdg g">Good</span></td></tr>
+        <tr><td>Jan 26</td><td style="font-size:10.5px;">AMBAJOGAI PEOPLES CO OP BANK MYDT</td><td>UPI</td><td><span class="ctag">AMB</span></td><td class="r mono">Pratik</td><td class="r mono">89</td><td class="r mono">89</td><td class="r mono">0</td><td class="r"><span class="hc h0">0.00%</span></td><td class="r"><span class="bdg g">Good</span></td></tr>
+        <tr><td>Jan 26</td><td style="font-size:10.5px;">AMBARNATH JAI HIND CO OP BANK</td><td>UPI</td><td><span class="ctag">AJC</span></td><td class="r mono">Divya</td><td class="r mono">68</td><td class="r mono">68</td><td class="r mono">0</td><td class="r"><span class="hc h0">0.00%</span></td><td class="r"><span class="bdg g">Good</span></td></tr>
+        <tr><td>Jan 26</td><td style="font-size:10.5px;">AMRELI JILLA MADHYASTHA SAHAKARI BANK</td><td>UPI</td><td><span class="ctag">AJM</span></td><td class="r mono">Ameya</td><td class="r mono">31</td><td class="r mono">31</td><td class="r mono">0</td><td class="r"><span class="hc h0">0.00%</span></td><td class="r"><span class="bdg g">Good</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="footer"><div style="font-size:10px;color:var(--text3);">NPCI Dashboad· CCU Team · Last sync: 09:45 AM 14 Mar 2026</div></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- PAGE: RM PERFORMANCE -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="page-rm" class="page">
+  <div class="pg-hdr"><div><div class="pg-title">RM Performance Scorecard</div><div class="pg-sub">Comparative benchmarking across all KPIs · MTD Mar 2026</div></div><div class="pg-ctrls"><button class="btn">⬇ Export</button></div></div>
+  <div class="panel">
+    <div class="ph"><div class="ph-ico" style="background:#EFF6FF;">🏆</div><div class="ph-title">RM wise KPI Scorecard — MTD</div></div>
+    <table class="tbl">
+      <thead><tr><th>RM Name</th><th class="r">Bank Count</th><th class="r">Zero Appr</th><th class="r">GST Pend%</th><th class="r">PCOM Pend</th><th class="r">CB Due (₹)</th><th class="r">RRC Overdue</th><th class="r">Deemed%</th><th class="r">Score</th></tr></thead>
+      <tbody>
+        <tr><td class="bname">Ameya Save</td><td class="r mono">271</td><td class="r"><span class="hc h2">15</span></td><td class="r"><span class="hc h1">65%</span></td><td class="r"><span class="hc h2">57</span></td><td class="r mono">23,651</td><td class="r"><span class="hc h1">4</span></td><td class="r"><span class="hc h1">1.61%</span></td><td class="r"><span class="bdg a">B+</span></td></tr>
+        <tr class="crit"><td class="bname">Deepak Panday</td><td class="r mono">242</td><td class="r"><span class="hc h3">23</span></td><td class="r"><span class="hc h1">64%</span></td><td class="r"><span class="hc h2">50</span></td><td class="r mono">55,150</td><td class="r"><span class="hc h0">1</span></td><td class="r"><span class="hc h3">6.29%</span></td><td class="r"><span class="bdg r">C</span></td></tr>
+        <tr><td class="bname">Divya Daiya</td><td class="r mono">9</td><td class="r"><span class="hc h0">1</span></td><td class="r"><span class="hc h0">55%</span></td><td class="r"><span class="hc h0">1</span></td><td class="r mono">0</td><td class="r"><span class="hc h0">0</span></td><td class="r"><span class="hc h0">0.00%</span></td><td class="r"><span class="bdg g">A</span></td></tr>
+        <tr><td class="bname">Himanshu Lal</td><td class="r mono">29</td><td class="r"><span class="hc h0">1</span></td><td class="r"><span class="hc h2">75%</span></td><td class="r"><span class="hc h0">4</span></td><td class="r mono">224</td><td class="r"><span class="hc h0">1</span></td><td class="r"><span class="hc h0">0.03%</span></td><td class="r"><span class="bdg g">A−</span></td></tr>
+        <tr><td class="bname">Mayur More</td><td class="r mono">216</td><td class="r"><span class="hc h2">19</span></td><td class="r"><span class="hc h2">70%</span></td><td class="r"><span class="hc h2">39</span></td><td class="r mono">31,499</td><td class="r"><span class="hc h2">6</span></td><td class="r"><span class="hc h1">0.21%</span></td><td class="r"><span class="bdg a">B</span></td></tr>
+        <tr><td class="bname">Pratik Lohakane</td><td class="r mono">132</td><td class="r"><span class="hc h2">15</span></td><td class="r"><span class="hc h3">77%</span></td><td class="r"><span class="hc h1">27</span></td><td class="r mono">58,835</td><td class="r"><span class="hc h0">1</span></td><td class="r"><span class="hc h1">0.97%</span></td><td class="r"><span class="bdg a">B−</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="padding:10px;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:8px;font-size:11px;color:#1E40AF;">
+    <b>Scoring Methodology:</b> A = &lt;5 zero-appr + &lt;65% GST pend + &lt;10 PCOM pend + &lt;1% Deemed | B = Moderate issues | C = Multiple critical issues requiring immediate management review
+  </div>
+  <div class="footer"><div style="font-size:10px;color:var(--text3);">NPCI Dashboad· CCU Team · Last sync: 09:45 AM 14 Mar 2026</div></div>
+</div>
+
+</div><!-- /main -->
+</div><!-- /layout -->
+
+<!-- ── ALERT MODAL ── -->
+<div class="modal-ov" id="alertModal" onclick="if(event.target===this)closeModal('alertModal')">
+  <div class="modal">
+    <div class="modal-hdr"><div class="modal-title">🔔 Active Alerts — 14 Mar 2026</div><button class="modal-close" onclick="closeModal('alertModal')">✕</button></div>
+    <div class="modal-body">
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div class="icard r"><div class="ititle">🔴 P1 — BOMBAY MERCANTILE (BMC): 3+ Month Continuous Deemed</div><div class="itext">Product: IMPS · RM: Deepak Panday · Action: Escalate to bank CEO / NPCI compliance team by 21 Mar 2026</div></div>
+        <div class="icard r"><div class="ititle">🔴 P1 — BHAVNAGAR DISTRICT CO OP (BVN): 3+ Month Continuous Deemed</div><div class="itext">Product: IMPS · RM: Mayur More · Action: Immediate bank visit / remediation plan required</div></div>
+        <div class="icard r"><div class="ititle">🔴 P1 — NFS: 28 Banks with Zero Approval Rate</div><div class="itext">Multiple RMs affected · Root cause: Switch connectivity / bank configuration issues · SLA: Resolve within 48 hours</div></div>
+        <div class="icard a"><div class="ititle">🟡 P2 — AEPS: 13 Banks with Zero Approval</div><div class="itext">Review bank-level configuration · RM follow-up required within 24 hours</div></div>
+        <div class="icard a"><div class="ititle">🟡 P2 — CB Due Today: ₹1,44,840 across 13 transactions</div><div class="itext">Ensure timely filing to avoid penalties. UPI-FC-WC: ₹96,306 largest single exposure (Pratik Lohakane, HSC)</div></div>
+        <div class="icard a"><div class="ititle">🟡 P3 — AEPS BD at 10.55% (Target &lt;5%)</div><div class="itext">Conduct technical review with AEPS switch team. Identify top 20 banks by BD volume for targeted intervention.</div></div>
+        <div class="icard a"><div class="ititle">🟡 P3 — GST Pending at 74.8% — February 2026</div><div class="itext">Pratik Lohakane: 100% AEPS pending. Commercial banks: 91.3%. Deadline for Feb filings approaching.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── ESCALATION MODAL ── -->
+<div class="modal-ov" id="escModal" onclick="if(event.target===this)closeModal('escModal')">
+  <div class="modal" style="width:480px;">
+    <div class="modal-hdr"><div class="modal-title">📩 Escalation — 3-Month Deemed Bank</div><button class="modal-close" onclick="closeModal('escModal')">✕</button></div>
+    <div class="modal-body">
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div class="icard r"><div class="ititle">Bank: BOMBAY MERCANTILE CO OP BANK (BMC)</div><div class="itext">Product: IMPS · RM: Deepak Panday · Duration: 3+ months consecutive deemed</div></div>
+        <div style="font-size:11.5px;color:var(--text2);line-height:1.6;">
+          <b>Recommended Actions:</b><br>
+          1. RM to contact bank NOC within 24 hours<br>
+          2. Schedule bank visit within 3 working days<br>
+          3. Submit remediation plan to NPCI by 21 Mar<br>
+          4. Weekly monitoring for next 30 days<br>
+          5. Escalate to DGM if no resolution by 28 Mar
+        </div>
+        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px;">
+          <button class="btn" onclick="closeModal('escModal')">Cancel</button>
+          <button class="btn pri" onclick="closeModal('escModal')">📩 Send Escalation Email</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── TAB NAVIGATION ──
+function showTab(id, navEl, tabEl) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.nav').forEach(n => n.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
+
+  const page = document.getElementById('page-' + id);
+  if (page) page.classList.add('on');
+
+  if (navEl) navEl.classList.add('on');
+  else {
+    document.querySelectorAll('.nav').forEach(n => {
+      if (n.getAttribute('onclick') && n.getAttribute('onclick').includes("'" + id + "'")) n.classList.add('on');
+    });
+  }
+  if (tabEl) tabEl.classList.add('on');
+  else {
+    document.querySelectorAll('.tab').forEach(t => {
+      if (t.getAttribute('onclick') && t.getAttribute('onclick').includes("'" + id + "'")) t.classList.add('on');
+    });
+  }
+
+  document.getElementById('mainArea').scrollTo(0, 0);
+}
+
+// ── RM FILTER ──
+function rmFilter(rm, el) {
+  document.querySelectorAll('.rm-pill').forEach(p => p.classList.remove('on'));
+  el.classList.add('on');
+  // In a real app this would filter all tables
+}
+
+// ── MODALS ──
+function openModal(id) { document.getElementById(id).classList.add('on'); }
+function closeModal(id) { document.getElementById(id).classList.remove('on'); }
+
+// ── GLOBAL CONTROLS ──
+function updatePeriod(v) { document.querySelector('.pg-sub') && console.log('Period:', v); }
+function updateRM(v) { console.log('RM filter:', v); }
+</script>
+</body>
+</html>
